@@ -2,6 +2,9 @@ package simulator;
 
 import board.ChessBoard;
 import board.piece.PieceEnumeration;
+import state.State;
+import state.StateEngine;
+import state.StateNode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,8 +14,19 @@ import board.piece.PieceEnumeration;
  * To change this template use File | Settings | File Templates.
  */
 public class ChessEngine {
+    private StateEngine stateEngine = new StateEngine();
+
     public void play() {
-        ChessBoard chessBoard = buildInitialChessBoard();
+        initializeStateEngine();
+    }
+
+    private void initializeStateEngine() {
+        State state = new State();
+        state.setChessBoard(buildInitialChessBoard());
+        StateNode stateNode = new StateNode();
+        stateNode.setState(state);
+        stateEngine.setRootState(stateNode);
+        stateEngine.setCurrentState(stateNode);
     }
 
     private ChessBoard buildInitialChessBoard() {

@@ -10,4 +10,20 @@ package state;
 public class StateEngine {
     private StateNode rootState;
     private StateNode currentState;
+
+    public StateNode getRootState() {
+        return rootState;
+    }
+
+    public void setRootState(StateNode rootState) {
+        this.rootState = rootState;
+    }
+
+    public StateNode getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(StateNode currentState) {
+        this.currentState = currentState;
+    }
 }

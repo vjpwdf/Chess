@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class StateNode {
     private StateNode parent;
+    private State state;
     private List<StateNode> childrenStates;
 
     public StateNode getParent() {
@@ -19,6 +20,14 @@ public class StateNode {
 
     public void setParent(StateNode parent) {
         this.parent = parent;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public List<StateNode> getChildrenStates() {
