@@ -65,32 +65,32 @@ public abstract class BaseAI {
 
 
     ///How many turns it has been since the beginning of the game
-    int turnNumber() {
+    int getTurnNumber() {
         return Client.INSTANCE.getTurnNumber(connection);
     }
 
     ///Player Number; either 0 or 1
-    int playerID() {
+    int getPlayerId() {
         return Client.INSTANCE.getPlayerID(connection);
     }
 
     ///What number game this is for the server
-    int gameNumber() {
+    int getGameNumber() {
         return Client.INSTANCE.getGameNumber(connection);
     }
 
     ///How many turns until the game ends because no pawn has moved and no piece has been taken
-    int TurnsToStalemate() {
+    int getTurnsUntilStalemate() {
         return Client.INSTANCE.getTurnsToStalemate(connection);
     }
 
     ///Player 0's time remaining
-    int player0Time() {
+    int getPlayer0Time() {
         return Client.INSTANCE.getPlayer0Time(connection);
     }
 
     ///Player 1's time remaining
-    int player1Time() {
+    int getPlayer1Time() {
         return Client.INSTANCE.getPlayer1Time(connection);
     }
 }

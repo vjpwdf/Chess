@@ -1,6 +1,7 @@
 package client.java;
 
 import com.sun.jna.Pointer;
+import player.Player;
 
 ///The class implementing gameplay logic.
 class AI extends BaseAI {
@@ -15,6 +16,9 @@ class AI extends BaseAI {
     //This function is called each time it is your turn
     //Return true to end your turn, return false to ask the server for updated information
     public boolean run() {
+        if(getPlayerId() == Player.PLAYER_1) {
+            
+        }
         return true;
     }
 
