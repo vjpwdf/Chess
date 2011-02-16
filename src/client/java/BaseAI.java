@@ -2,6 +2,8 @@ package client.java;
 
 import com.sun.jna.Pointer;
 
+import java.io.IOException;
+
 /// \brief A basic AI interface.
 
 ///This class implements most the code an AI would need to interface with the lower-level game code.
@@ -35,14 +37,14 @@ public abstract class BaseAI {
     ///This is run every turn . Return true to end the turn, return false
     ///to request a status update from the server and then immediately rerun this function with the
     ///latest game status.
-    public abstract boolean run();
+    public abstract boolean run() throws IOException;
 
     ///
     ///This is run on after your last turn.
     public abstract void end();
 
 
-    public boolean startTurn() {
+    public boolean startTurn() throws IOException {
         iteration++;
         int count = 0;
         count = Client.INSTANCE.getMoveCount(connection);

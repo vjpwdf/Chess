@@ -2,8 +2,10 @@ package client.java;
 
 import com.sun.jna.Pointer;
 
+import java.io.IOException;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         boolean practice = false; //this must not be touched!
         if (args.length < 1) {
             System.out.println("Please enter a hostname");
