@@ -1,0 +1,179 @@
+\hypertarget{interfaceClient}{
+\section{Client Interface Reference}
+\label{interfaceClient}\index{Client@{Client}}
+}
+
+
+Inherits com::sun::jna::Library.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{interfaceClient_a6d25aca960b1e1a38ce203d6a969f9bc}{
+Pointer {\bfseries createConnection} ()}
+\label{interfaceClient_a6d25aca960b1e1a38ce203d6a969f9bc}
+
+\item 
+\hypertarget{interfaceClient_acfc9ada4dc1c3c147bd10d33a93cd5d5}{
+boolean {\bfseries serverConnect} (Pointer connection, String host, String port)}
+\label{interfaceClient_acfc9ada4dc1c3c147bd10d33a93cd5d5}
+
+\item 
+\hypertarget{interfaceClient_a889a9d7b3e68cb21ffcfaa7b2c19861b}{
+boolean {\bfseries serverLogin} (Pointer connection, String username, String password)}
+\label{interfaceClient_a889a9d7b3e68cb21ffcfaa7b2c19861b}
+
+\item 
+\hypertarget{interfaceClient_a4912adbddcbeff19d01f001ccd210375}{
+int {\bfseries createGame} (Pointer connection)}
+\label{interfaceClient_a4912adbddcbeff19d01f001ccd210375}
+
+\item 
+\hypertarget{interfaceClient_a8a9bed85e15f075bee07458a87645b6b}{
+int {\bfseries joinGame} (Pointer connection, int id)}
+\label{interfaceClient_a8a9bed85e15f075bee07458a87645b6b}
+
+\item 
+\hypertarget{interfaceClient_aff558de8ad20a23858ce3dc165fc4db7}{
+void {\bfseries endTurn} (Pointer connection)}
+\label{interfaceClient_aff558de8ad20a23858ce3dc165fc4db7}
+
+\item 
+\hypertarget{interfaceClient_a64de0e135006bec1aa4875ab0760f691}{
+void {\bfseries getStatus} (Pointer connection)}
+\label{interfaceClient_a64de0e135006bec1aa4875ab0760f691}
+
+\item 
+\hypertarget{interfaceClient_a88dd14b60667b07d577798e1c707c05f}{
+int {\bfseries networkLoop} (Pointer connection)}
+\label{interfaceClient_a88dd14b60667b07d577798e1c707c05f}
+
+\item 
+\hypertarget{interfaceClient_ae6117daed1d85523cbede25e9ca8632b}{
+int {\bfseries pieceMove} (Pointer object, int file, int rank, int type)}
+\label{interfaceClient_ae6117daed1d85523cbede25e9ca8632b}
+
+\item 
+\hypertarget{interfaceClient_a1c180b84ed7e74644ac62c1e069e26de}{
+int {\bfseries getTurnNumber} (Pointer connection)}
+\label{interfaceClient_a1c180b84ed7e74644ac62c1e069e26de}
+
+\item 
+\hypertarget{interfaceClient_a45ca933e037a2fa5ce4f97e67eb8b62f}{
+int {\bfseries getPlayerID} (Pointer connection)}
+\label{interfaceClient_a45ca933e037a2fa5ce4f97e67eb8b62f}
+
+\item 
+\hypertarget{interfaceClient_a172426923fb5bd5bdf79a3a3b6caf2e1}{
+int {\bfseries getGameNumber} (Pointer connection)}
+\label{interfaceClient_a172426923fb5bd5bdf79a3a3b6caf2e1}
+
+\item 
+\hypertarget{interfaceClient_a384c1a09c5026e955b79335561a61361}{
+int {\bfseries getTurnsToStalemate} (Pointer connection)}
+\label{interfaceClient_a384c1a09c5026e955b79335561a61361}
+
+\item 
+\hypertarget{interfaceClient_a1f16fbd34fbdee312db08c06d996b98b}{
+int {\bfseries getPlayer0Time} (Pointer connection)}
+\label{interfaceClient_a1f16fbd34fbdee312db08c06d996b98b}
+
+\item 
+\hypertarget{interfaceClient_a2996321a7d00f9179b4bf2b5e7b15665}{
+int {\bfseries getPlayer1Time} (Pointer connection)}
+\label{interfaceClient_a2996321a7d00f9179b4bf2b5e7b15665}
+
+\item 
+\hypertarget{interfaceClient_aa80bcad3cc5675a5636d2e6594fe41d8}{
+Pointer {\bfseries getMove} (Pointer connection, int num)}
+\label{interfaceClient_aa80bcad3cc5675a5636d2e6594fe41d8}
+
+\item 
+\hypertarget{interfaceClient_a03708130a71ab494fd548cdd0fae8174}{
+int {\bfseries getMoveCount} (Pointer connection)}
+\label{interfaceClient_a03708130a71ab494fd548cdd0fae8174}
+
+\item 
+\hypertarget{interfaceClient_a96ec2ddbbb75fdd44e4b0689ef9d901f}{
+Pointer {\bfseries getPiece} (Pointer connection, int num)}
+\label{interfaceClient_a96ec2ddbbb75fdd44e4b0689ef9d901f}
+
+\item 
+\hypertarget{interfaceClient_a8a8f318d62176bdfe0ddc7c776270fca}{
+int {\bfseries getPieceCount} (Pointer connection)}
+\label{interfaceClient_a8a8f318d62176bdfe0ddc7c776270fca}
+
+\item 
+\hypertarget{interfaceClient_ad3dfc9cd293e85e0f21c8dbaf89200f8}{
+int {\bfseries moveGetId} (Pointer ptr)}
+\label{interfaceClient_ad3dfc9cd293e85e0f21c8dbaf89200f8}
+
+\item 
+\hypertarget{interfaceClient_a7a86558ad65c59660e44c9e4c6d2815f}{
+int {\bfseries moveGetFromFile} (Pointer ptr)}
+\label{interfaceClient_a7a86558ad65c59660e44c9e4c6d2815f}
+
+\item 
+\hypertarget{interfaceClient_a164f5f09dd3aaaa20f3dd6199dd0d834}{
+int {\bfseries moveGetFromRank} (Pointer ptr)}
+\label{interfaceClient_a164f5f09dd3aaaa20f3dd6199dd0d834}
+
+\item 
+\hypertarget{interfaceClient_ac57c7a56bedebd47d82be8e9ee38e4e8}{
+int {\bfseries moveGetToFile} (Pointer ptr)}
+\label{interfaceClient_ac57c7a56bedebd47d82be8e9ee38e4e8}
+
+\item 
+\hypertarget{interfaceClient_ade447dc92d6b0a8e391f663474296f3b}{
+int {\bfseries moveGetToRank} (Pointer ptr)}
+\label{interfaceClient_ade447dc92d6b0a8e391f663474296f3b}
+
+\item 
+\hypertarget{interfaceClient_a5a83ce746d5752f1e419c90a7a6df658}{
+int {\bfseries moveGetPromoteType} (Pointer ptr)}
+\label{interfaceClient_a5a83ce746d5752f1e419c90a7a6df658}
+
+\item 
+\hypertarget{interfaceClient_a00d46242f8a76a382f76d85118d10f6e}{
+int {\bfseries pieceGetId} (Pointer ptr)}
+\label{interfaceClient_a00d46242f8a76a382f76d85118d10f6e}
+
+\item 
+\hypertarget{interfaceClient_a223207714420c4354c9fb3f48bb18a21}{
+int {\bfseries pieceGetOwner} (Pointer ptr)}
+\label{interfaceClient_a223207714420c4354c9fb3f48bb18a21}
+
+\item 
+\hypertarget{interfaceClient_a94b148d7079dcd6180b7435f0892cafc}{
+int {\bfseries pieceGetFile} (Pointer ptr)}
+\label{interfaceClient_a94b148d7079dcd6180b7435f0892cafc}
+
+\item 
+\hypertarget{interfaceClient_a05ba3f26aab59e0beb39d9c5adce5af6}{
+int {\bfseries pieceGetRank} (Pointer ptr)}
+\label{interfaceClient_a05ba3f26aab59e0beb39d9c5adce5af6}
+
+\item 
+\hypertarget{interfaceClient_a285985a9ae48f376629356a8851190d6}{
+int {\bfseries pieceGetHasMoved} (Pointer ptr)}
+\label{interfaceClient_a285985a9ae48f376629356a8851190d6}
+
+\item 
+\hypertarget{interfaceClient_aa3e90d80e50be15fe402ee1cef1ab8d8}{
+int {\bfseries pieceGetType} (Pointer ptr)}
+\label{interfaceClient_aa3e90d80e50be15fe402ee1cef1ab8d8}
+
+\end{DoxyCompactItemize}
+\subsection*{Package Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{interfaceClient_a0ae9e0dc323a16f1240f314e379de21e}{
+\hyperlink{interfaceClient}{Client} {\bfseries INSTANCE} = (\hyperlink{interfaceClient}{Client})Native.loadLibrary(\char`\"{}client\char`\"{}, Client.class)}
+\label{interfaceClient_a0ae9e0dc323a16f1240f314e379de21e}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this interface was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Client.java\end{DoxyCompactItemize}
