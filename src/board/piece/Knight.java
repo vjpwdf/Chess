@@ -40,15 +40,13 @@ public class Knight extends Piece {
             return;    
         }
         if (chessPiece.isWhitePlayer()) {
-            if ((PieceEnumeration.isPieceABlackPiece(board[piecePosition.getX() + xInc][piecePosition.getY() + yInc]) ||
-                    board[piecePosition.getX() + xInc][piecePosition.getY() + yInc] == PieceEnumeration.FREE_SPACE)
-                    && !PieceEnumeration.isBlackKing(board[piecePosition.getX() + xInc][piecePosition.getY() + yInc])) {
+            if (PieceEnumeration.isPieceABlackPiece(board[piecePosition.getX() + xInc][piecePosition.getY() + yInc]) ||
+                    board[piecePosition.getX() + xInc][piecePosition.getY() + yInc] == PieceEnumeration.FREE_SPACE) {
                 validKnightMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(piecePosition.getX() + xInc, piecePosition.getY() + yInc)));
             }
         } else {
-            if ((PieceEnumeration.isPieceAWhitePiece(board[piecePosition.getX() + xInc][piecePosition.getY() + yInc]) ||
-                    board[piecePosition.getX() + xInc][piecePosition.getY() + yInc] == PieceEnumeration.FREE_SPACE)
-                    && !PieceEnumeration.isWhiteKing(board[piecePosition.getX() + xInc][piecePosition.getY() + yInc])) {
+            if (PieceEnumeration.isPieceAWhitePiece(board[piecePosition.getX() + xInc][piecePosition.getY() + yInc]) ||
+                    board[piecePosition.getX() + xInc][piecePosition.getY() + yInc] == PieceEnumeration.FREE_SPACE) {
                 validKnightMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(piecePosition.getX() + xInc, piecePosition.getY() + yInc)));
             }
         }
