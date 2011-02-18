@@ -5,6 +5,7 @@ import board.piece.PieceEnumeration;
 import board.piece.PieceFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,5 +40,28 @@ public class ChessBoard {
             }
         }
         return piecesForPlayer;
+    }
+
+    @Override
+    public String toString() {
+        String output = "";
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                output = output.concat("" + board[7-i][7-j]);
+            }
+        }
+        return output;
+    }
+
+    public ChessBoard copy() {
+        ChessBoard chessBoard = new ChessBoard();
+        byte copiedBoard[][] = new byte[8][8];
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                copiedBoard[i][j] = board[i][j];
+            }
+        }
+        chessBoard.setBoard(copiedBoard);
+        return chessBoard;
     }
 }

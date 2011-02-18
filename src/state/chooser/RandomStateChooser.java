@@ -2,6 +2,9 @@ package state.chooser;
 
 import state.State;
 import state.StateEngine;
+import state.StateNode;
+
+import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,8 +14,9 @@ import state.StateEngine;
  */
 public class RandomStateChooser implements StateChooser {
     @Override
-    public State chooseNextStateBasedOnCurrentState(State state, boolean isWhitePlayer) {
-        StateEngine.generateFutureStates(state, isWhitePlayer);
-        return null;
+    public State chooseNextStateBasedOnCurrentState(StateNode state, boolean isWhitePlayer) {
+        StateEngine.generateFutureStates(state, isWhitePlayer, null);
+        Random random = new Random();
+        return state.getChildrenStates().get(Math.abs(random.nextInt()%state.getChildrenStates().size())).getState();
     }
 }

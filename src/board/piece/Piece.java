@@ -33,5 +33,14 @@ public abstract class Piece {
         isWhitePlayer = whitePlayer;
     }
 
-    public abstract List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> oponentsChessPieces, ChessBoard chessBoard);
+    public abstract List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> oponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove);
+
+    public Piece getPieceByPositionFromList(PiecePosition piecePosition, List<Piece> pieces) {
+        for (Piece piece : pieces) {
+            if(piece.getPosition().equals(piecePosition)) {
+                return piece;
+            }
+        }
+        return null;
+    }
 }

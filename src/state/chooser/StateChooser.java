@@ -1,6 +1,7 @@
 package state.chooser;
 
 import state.State;
+import state.StateNode;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,5 +11,5 @@ import state.State;
  * To change this template use File | Settings | File Templates.
  */
 public interface StateChooser {
-    public State chooseNextStateBasedOnCurrentState(State state, boolean whitePlayer);
+    public State chooseNextStateBasedOnCurrentState(StateNode state, boolean whitePlayer);
 }

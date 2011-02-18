@@ -12,6 +12,7 @@ public class ChessMove {
     private byte fromRank;
     private byte toRank;
     private char promotion = '\0';
+    private boolean capturedViaEnPassant = false;
 
     public char getFromFile() {
         return fromFile;
@@ -19,6 +20,10 @@ public class ChessMove {
 
     public void setFromFile(char fromFile) {
         this.fromFile = fromFile;
+    }
+
+    public byte getFromFileByte() {
+        return (byte) (fromFile - 97);
     }
 
     public char getToFile() {
@@ -51,5 +56,22 @@ public class ChessMove {
 
     public void setPromotion(char promotion) {
         this.promotion = promotion;
+    }
+
+    public int getToFileByte() {
+        return (byte) (toFile - 97);
+    }
+
+    public boolean isCapturedViaEnPassant() {
+        return capturedViaEnPassant;
+    }
+
+    public void setCapturedViaEnPassant(boolean capturedViaEnPassant) {
+        this.capturedViaEnPassant = capturedViaEnPassant;
+    }
+
+    @Override
+    public String toString() {
+        return "" + fromFile + (int)fromRank + toFile + (int)toRank + (promotion=='\0'?"":promotion);
     }
 }

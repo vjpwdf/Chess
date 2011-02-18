@@ -14,16 +14,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 ///The class implementing gameplay logic.
-class AI extends BaseAI {
-    StateEngine stateEngine = new StateEngine();
-    StateChooser stateChooser = new RandomStateChooser();
+public class AI extends BaseAI {
+    public static StateEngine stateEngine = new StateEngine();
+    private StateChooser stateChooser = new RandomStateChooser();
 
     public AI(Pointer c) {
         super(c);
         initializeStateEngine();
     }
 
-    private void initializeStateEngine() {
+    public static void initializeStateEngine() {
         StateNode initialStateNode = new StateNode();
         State initialState = new State();
         initialStateNode.setState(initialState);
@@ -38,7 +38,7 @@ class AI extends BaseAI {
         return "password";
     }
 
-    public int letterToFile(char letter) {
+    public static int letterToFile(char letter) {
         if (letter >= 'a' && letter <= 'h')
             return letter - 'a' + 1;
         else
@@ -130,7 +130,7 @@ class AI extends BaseAI {
         if (System.getProperty("manual").equals("false")) {
             stateEngine.setCurrentBoard(board);
             ChessMove nextMoveToPerform = stateEngine.getNextStateFromStateChooser(stateChooser, isWhitePlayer);
-            pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank(), nextMoveToPerform.getPromotion());
+            pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank()+1, nextMoveToPerform.getPromotion());
         }
 
         // Look until we get something we understand
@@ -206,7 +206,7 @@ class AI extends BaseAI {
 
     private int getIndexOfPiece(ChessMove nextMoveToPerform) {
         for (int i = 0; i < pieces.length; i++) {
-            if(pieces[i].getFile() == letterToFile(nextMoveToPerform.getFromFile()) && pieces[i].getRank() == nextMoveToPerform.getFromRank()) {
+            if(pieces[i].getFile() == letterToFile(nextMoveToPerform.getFromFile()) && pieces[i].getRank() == nextMoveToPerform.getFromRank()+1) {
                 return i;
             }
         }

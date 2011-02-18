@@ -67,10 +67,18 @@ public class PieceEnumeration {
     }
 
     public static boolean isPieceAWhitePiece(byte piece) {
-        return piece <= 6;
+        return piece <= 6 && piece >= 1;
     }
 
     public static boolean isPieceABlackPiece(byte piece) {
         return piece >= 7;
+    }
+
+    public static boolean isWhiteKing(byte piece) {
+        return piece == P1_KING;
+    }
+
+    public static boolean isBlackKing(byte piece) {
+        return piece == P2_KING;
     }
 }

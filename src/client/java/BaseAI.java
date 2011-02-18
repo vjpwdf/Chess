@@ -11,8 +11,8 @@ import java.io.IOException;
 ///AIs should extend this class to get a lot of builer-plate code out of the way
 ///The provided AI class does just that.
 public abstract class BaseAI {
-    static Move[] moves;
-    static Piece[] pieces;
+    public static Move[] moves;
+    public static Piece[] pieces;
     Pointer connection;
     static int iteration;
     boolean initialized;

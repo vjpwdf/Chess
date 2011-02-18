@@ -12,6 +12,25 @@ import state.State;
  */
 public class PieceMover {
     public static State generateNewStateWithMove(ChessBoard chessBoard, ChessMove chessMove) {
-        return null;    
+        ChessBoard chessBoardCopy = chessBoard.copy();
+        byte[][] board = chessBoardCopy.getBoard();
+        byte movingPiece = board[chessMove.getFromFileByte()][chessMove.getFromRank()];
+        if(chessMove.getPromotion() != '\0') {
+            movingPiece = PieceEnumeration.getByteFromCharacter(chessMove.getPromotion());
+        }
+        board[chessMove.getFromFileByte()][chessMove.getFromRank()] = 0;
+        board[chessMove.getToFileByte()][chessMove.getToRank()] = movingPiece;
+        if(chessMove.isCapturedViaEnPassant()) {
+            if(PieceEnumeration.isPieceAWhitePiece(movingPiece)) {
+                board[chessMove.getToFileByte()][chessMove.getToRank()-1] = 0;
+            } else {
+                board[chessMove.getToFileByte()][chessMove.getToRank()+1] = 0;
+            }
+        }
+        chessBoardCopy.setBoard(board);
+        State state = new State();
+        state.setChessBoard(chessBoardCopy);
+        state.setMove(chessMove);
+        return state;
     }
 }
