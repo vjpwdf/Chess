@@ -1,6 +1,7 @@
 package state;
 
 import board.ChessBoard;
+import board.move.ChessMove;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,7 +11,16 @@ import board.ChessBoard;
  * To change this template use File | Settings | File Templates.
  */
 public class State {
+    private ChessMove move;
     private ChessBoard chessBoard;
+
+    public ChessMove getMove() {
+        return move;
+    }
+
+    public void setMove(ChessMove move) {
+        this.move = move;
+    }
 
     public ChessBoard getChessBoard() {
         return chessBoard;

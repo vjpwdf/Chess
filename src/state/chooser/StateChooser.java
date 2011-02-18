@@ -10,5 +10,5 @@ import state.State;
  * To change this template use File | Settings | File Templates.
  */
 public interface StateChooser {
-    public State chooseNextStateBasedOnCurrentState(State state);
+    public State chooseNextStateBasedOnCurrentState(State state, boolean whitePlayer);
 }

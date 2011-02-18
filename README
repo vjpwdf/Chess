@@ -4,7 +4,7 @@ Choose a language: C++, Java, Python
 
 Open the client/ folder, then open your language of choice (note, c means c++ here).
 
-The only file you should need to change in the provided code is the AI class (AI.h AI.cpp, AI.java, AI.py).
+The only fromFile you should need to change in the provided code is the AI class (AI.h AI.cpp, AI.java, AI.py).
 
 The AI class inherits from BaseAI, which contains everything your program needs to know about, such as:
  * List of pieces representing the current board state

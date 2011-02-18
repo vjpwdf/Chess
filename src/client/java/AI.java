@@ -1,7 +1,13 @@
 package client.java;
 
+import board.move.ChessMove;
 import com.sun.jna.Pointer;
 import player.Player;
+import state.State;
+import state.StateEngine;
+import state.StateNode;
+import state.chooser.RandomStateChooser;
+import state.chooser.StateChooser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +15,21 @@ import java.io.InputStreamReader;
 
 ///The class implementing gameplay logic.
 class AI extends BaseAI {
+    StateEngine stateEngine = new StateEngine();
+    StateChooser stateChooser = new RandomStateChooser();
+
+    public AI(Pointer c) {
+        super(c);
+        initializeStateEngine();
+    }
+
+    private void initializeStateEngine() {
+        StateNode initialStateNode = new StateNode();
+        State initialState = new State();
+        initialStateNode.setState(initialState);
+        stateEngine.setRootState(initialStateNode);
+    }
+
     public String username() {
         return "Shell AI";
     }
@@ -23,6 +44,7 @@ class AI extends BaseAI {
         else
             return 0; // Invalid
     }
+
 
     //This function is called each time it is your turn
     //Return true to end your turn, return false to ask the server for updated information
@@ -68,8 +90,8 @@ class AI extends BaseAI {
         // Show the current board
         // The framework doesn't store it as a board, instead its a collection of pieces : so we need to make an array with the current board state
         char[][] board = new char[8][8];
-        for(int i = 0; i < 8; i++) {
-            for(int x = 0; x < 8; x++) {
+        for (int i = 0; i < 8; i++) {
+            for (int x = 0; x < 8; x++) {
                 board[i][x] = '.';
             }
         }
@@ -105,8 +127,14 @@ class AI extends BaseAI {
 
         boolean validInput = false;
 
+        if (System.getProperty("manual").equals("false")) {
+            stateEngine.setCurrentBoard(board);
+            ChessMove nextMoveToPerform = stateEngine.getNextStateFromStateChooser(stateChooser, isWhitePlayer);
+            pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank(), nextMoveToPerform.getPromotion());
+        }
+
         // Look until we get something we understand
-        while (!validInput) {
+        while (!validInput && System.getProperty("manual").equals("true")) {
             // Take input from the keyboard
             System.out.println("Input a move : format is <file><rank><file><rank> (like d2e2) : for promotions put an extra character with the type (e2f2Q)");
             System.out.println("move> ");
@@ -176,17 +204,21 @@ class AI extends BaseAI {
         return true;
     }
 
+    private int getIndexOfPiece(ChessMove nextMoveToPerform) {
+        for (int i = 0; i < pieces.length; i++) {
+            if(pieces[i].getFile() == letterToFile(nextMoveToPerform.getFromFile()) && pieces[i].getRank() == nextMoveToPerform.getFromRank()) {
+                return i;
+            }
+        }
+        return 0;
+    }
 
     //This function is called once, before your first turn
     public void init() {
     }
 
+
     //This function is called once, after your last turn
     public void end() {
-    }
-
-
-    public AI(Pointer c) {
-        super(c);
     }
 }

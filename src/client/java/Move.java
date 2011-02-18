@@ -1,10 +1,9 @@
 package client.java;
 
-import client.java.Client;
 import com.sun.jna.Pointer;
 
 ///A chess move
-class Move {
+public class Move {
     Pointer ptr;
     int ID;
     int iteration;
@@ -67,5 +66,4 @@ class Move {
         validify();
         return Client.INSTANCE.moveGetPromoteType(ptr);
     }
-
 }

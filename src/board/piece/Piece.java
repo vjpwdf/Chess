@@ -1,5 +1,11 @@
 package board.piece;
 
+import board.ChessBoard;
+import board.move.ChessMove;
+import client.java.Move;
+
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: vincent
@@ -9,6 +15,7 @@ package board.piece;
  */
 public abstract class Piece {
     private PiecePosition position;
+    private boolean isWhitePlayer;
 
     public PiecePosition getPosition() {
         return position;
@@ -17,4 +24,14 @@ public abstract class Piece {
     public void setPosition(PiecePosition position) {
         this.position = position;
     }
+
+    public boolean isWhitePlayer() {
+        return isWhitePlayer;
+    }
+
+    public void setWhitePlayer(boolean whitePlayer) {
+        isWhitePlayer = whitePlayer;
+    }
+
+    public abstract List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> oponentsChessPieces, ChessBoard chessBoard);
 }
