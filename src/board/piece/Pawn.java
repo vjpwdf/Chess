@@ -40,12 +40,12 @@ public class Pawn extends Piece {
         List<ChessMove> validPawnMovesCopy = new ArrayList<ChessMove>(allValidPawnMoves);
         PiecePosition piecePosition = chessPiece.getPosition();
         for (ChessMove validPawnMove : validPawnMovesCopy) {
-            if((chessPiece.isWhitePlayer() && validPawnMove.getToRank()==7) || (!chessPiece.isWhitePlayer() && validPawnMove.getToRank()==0)) {
-                    allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'R'));
-                    allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'N'));
-                    allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'B'));
-                    allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'Q'));
-                    allValidPawnMoves.remove(validPawnMove);
+            if ((chessPiece.isWhitePlayer() && validPawnMove.getToRank() == 7) || (!chessPiece.isWhitePlayer() && validPawnMove.getToRank() == 0)) {
+                allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'R'));
+                allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'N'));
+                allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'B'));
+                allValidPawnMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(validPawnMove.getToFileByte(), validPawnMove.getToRank()), 'Q'));
+                allValidPawnMoves.remove(validPawnMove);
             }
         }
     }
@@ -55,9 +55,13 @@ public class Pawn extends Piece {
         if (lastMove == null) {
             return captureMoves;
         }
+
         PiecePosition pawnPosition = chessPiece.getPosition();
         byte[][] board = chessBoard.getBoard();
         if (chessPiece.isWhitePlayer()) {
+            if (board[lastMove.getToFileByte()][lastMove.getToRank()] != PieceEnumeration.P2_PAWN) {
+                return captureMoves;
+            }
             if (lastMove.getFromRank() == 6 && lastMove.getToRank() == 4) {
                 if (pawnPosition.equals(new PiecePosition(lastMove.getFromFileByte() - 1, lastMove.getToRank()))) {
                     captureMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(pawnPosition, new PiecePosition(pawnPosition.getX() + 1, pawnPosition.getY() + 1), true));
@@ -67,6 +71,9 @@ public class Pawn extends Piece {
                 }
             }
         } else {
+            if (board[lastMove.getToFileByte()][lastMove.getToRank()] != PieceEnumeration.P1_PAWN) {
+                return captureMoves;
+            }
             if (lastMove.getFromRank() == 1 && lastMove.getToRank() == 3) {
                 if (pawnPosition.equals(new PiecePosition(lastMove.getFromFileByte() - 1, lastMove.getToRank()))) {
                     captureMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(pawnPosition, new PiecePosition(pawnPosition.getX() + 1, pawnPosition.getY() - 1), true));

@@ -170,4 +170,50 @@ public class Pawn_UT {
         StateEngine.generateFutureStates(state, false, chessMove);
         assertEquals(4, state.getChildrenStates().size());
     }
+
+    @Test
+    public void testGetValidPieceMoves_EnPassant_ForWhite_DifferentPiece() throws Exception {
+        char charBoard[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', 'P', 'q', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        ChessMove chessMove = new ChessMove();
+        chessMove.setFromFile('f');
+        chessMove.setFromRank((byte) 6);
+        chessMove.setToFile('f');
+        chessMove.setToRank((byte) 4);
+        StateNode state = StateEngine.convertBoardToState(board, null);
+        StateEngine.generateFutureStates(state, true, chessMove);
+        assertEquals(1, state.getChildrenStates().size());
+    }
+
+    @Test
+    public void testGetValidPieceMoves_EnPassant_ForBlack_DifferentPiece() throws Exception {
+        char charBoard[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', 'p', 'R', 'p', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        ChessMove chessMove = new ChessMove();
+        chessMove.setFromFile('e');
+        chessMove.setFromRank((byte) 1);
+        chessMove.setToFile('e');
+        chessMove.setToRank((byte) 3);
+        StateNode state = StateEngine.convertBoardToState(board, null);
+        StateEngine.generateFutureStates(state, false, chessMove);
+        assertEquals(2, state.getChildrenStates().size());
+    }
 }
