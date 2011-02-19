@@ -1,12 +1,19 @@
 package board.piece;
 
 /**
- * Created by IntelliJ IDEA.
  * User: vincent
  * Date: 17-Feb-2011
  * Time: 4:30:17 PM
  */
 public class PieceFactory {
+    /**
+     * Builds the correct abstract piece based upon its character byte representation, whether it is a white piece, and its current position on the board
+     * @param pieceValue the byte representation of the piece
+     * @param x its x position on the board
+     * @param y its y position on the board
+     * @param isWhitePlayer whether the piece is for a white player or black
+     * @return the correct abstract piece
+     */
     public static Piece getPieceFromByteValue(byte pieceValue, int x, int y, boolean isWhitePlayer) {
         Piece piece;
 

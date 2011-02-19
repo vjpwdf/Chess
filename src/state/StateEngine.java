@@ -24,6 +24,10 @@ import java.util.List;
 public class StateEngine {
     private StateNode rootState;
 
+    /**
+     * Returns the root state that the state engine is currently in
+     * @return root state
+     */
     public StateNode getRootState() {
         return rootState;
     }
@@ -46,16 +50,25 @@ public class StateEngine {
         List<Piece> chessPieces = state.getState().getChessBoard().getPiecesForPlayer(isWhitePlayer);
         List<Piece> opponentsChessPieces = state.getState().getChessBoard().getPiecesForPlayer(!isWhitePlayer);
         List<ChessMove> allValidChessPieceMoves = new ArrayList<ChessMove>();
+        lastMove = convertLastMoveFromServer(lastMove);
+        getAllValidChessPieceMoves(state, lastMove, chessPieces, opponentsChessPieces, allValidChessPieceMoves);
+        buildNewStatesFromMoves(allValidChessPieceMoves, state.getState().getChessBoard(), state);
+    }
+
+    private static ChessMove convertLastMoveFromServer(ChessMove lastMove) {
         if(AI.moves != null && AI.moves.length > 0) {
             lastMove = ChessMoveBuilder.convertMoveToChessMove(AI.moves[0]);
         }
+        return lastMove;
+    }
+
+    private static void getAllValidChessPieceMoves(StateNode state, ChessMove lastMove, List<Piece> chessPieces, List<Piece> opponentsChessPieces, List<ChessMove> allValidChessPieceMoves) {
         for (Piece chessPiece : chessPieces) {
             List<ChessMove> validChessPieceMoves = chessPiece.getValidPieceMoves(chessPiece, opponentsChessPieces, state.getState().getChessBoard(), lastMove);
             if (validChessPieceMoves != null) {
                 allValidChessPieceMoves.addAll(validChessPieceMoves);
             }
         }
-        buildNewStatesFromMoves(allValidChessPieceMoves, state.getState().getChessBoard(), state);
     }
 
     private static void buildNewStatesFromMoves(List<ChessMove> allValidChessPieceMoves, ChessBoard chessBoard, StateNode state) {

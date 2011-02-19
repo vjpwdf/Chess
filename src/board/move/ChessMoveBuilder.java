@@ -10,6 +10,12 @@ import client.java.Move;
  * Time: 5:05:19 PM
  */
 public class ChessMoveBuilder {
+    /**
+     * Builds a chess move from two positions
+     * @param x from position
+     * @param y to position
+     * @return a valid chess move
+     */
     public static ChessMove buildChessMoveFromPositions(PiecePosition x, PiecePosition y) {
         ChessMove chessMove = new ChessMove();
         chessMove.setFromRank((byte) x.getY());
@@ -19,6 +25,13 @@ public class ChessMoveBuilder {
         return chessMove;
     }
 
+    /**
+     * Builds a chess move from two positions
+     * @param x from position
+     * @param y to position
+     * @param promotion if the piece was promoted during the move
+     * @return a valid chess move
+     */
     public static ChessMove buildChessMoveFromPositions(PiecePosition x, PiecePosition y, char promotion) {
         ChessMove chessMove = new ChessMove();
         chessMove.setFromRank((byte) x.getY());
@@ -29,6 +42,13 @@ public class ChessMoveBuilder {
         return chessMove;
     }
 
+    /**
+     * Builds a chess move from two positions
+     * @param x from position
+     * @param y to position
+     * @param capturedViaEnPassant if the piece was captured via en passant
+     * @return a valid chess move
+     */
     public static ChessMove buildChessMoveFromPositions(PiecePosition x, PiecePosition y, boolean capturedViaEnPassant) {
         ChessMove chessMove = new ChessMove();
         chessMove.setFromRank((byte) x.getY());
@@ -39,6 +59,11 @@ public class ChessMoveBuilder {
         return chessMove;
     }
 
+    /**
+     * Converts a server move into a readable chess move (to avoid making excessive server calls)
+     * @param move move to be converted
+     * @return readable chess move
+     */
     public static ChessMove convertMoveToChessMove(Move move) {
         ChessMove chessMove = new ChessMove();
         chessMove.setFromFile((char) (move.getFromFile()+96));

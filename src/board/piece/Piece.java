@@ -2,45 +2,57 @@ package board.piece;
 
 import board.ChessBoard;
 import board.move.ChessMove;
-import client.java.Move;
 
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: vincent
  * Date: Feb 14, 2011
  * Time: 7:34:09 PM
- * To change this template use File | Settings | File Templates.
  */
 public abstract class Piece {
     private PiecePosition position;
     private boolean isWhitePlayer;
 
+    /**
+     * Returns the pieces position on the board
+     * @return the piece position on the board
+     */
     public PiecePosition getPosition() {
         return position;
     }
 
+    /**
+     * Sets the piece position on the board
+     * @param position the position on the board
+     */
     public void setPosition(PiecePosition position) {
         this.position = position;
     }
 
+    /**
+     * Gets whether this piece is a white piece or black
+     * @return whether this piece is a white piece or black
+     */
     public boolean isWhitePlayer() {
         return isWhitePlayer;
     }
 
+    /**
+     * Sets whether this piece is a white piece or black
+     * @param whitePlayer whether this piece is a white piece or black
+     */
     public void setWhitePlayer(boolean whitePlayer) {
         isWhitePlayer = whitePlayer;
     }
 
-    public abstract List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> oponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove);
-
-    public Piece getPieceByPositionFromList(PiecePosition piecePosition, List<Piece> pieces) {
-        for (Piece piece : pieces) {
-            if(piece.getPosition().equals(piecePosition)) {
-                return piece;
-            }
-        }
-        return null;
-    }
+    /**
+     * Gets all valid piece moves for the piece
+     * @param chessPiece piece to get moves for
+     * @param opponentsChessPieces all opponents chess pieces
+     * @param chessBoard the current chess board
+     * @param lastMove the last move performed
+     * @return a list of valid chess moves for this piece
+     */
+    public abstract List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> opponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove);
 }

@@ -3,27 +3,31 @@ package board.piece;
 import board.ChessBoard;
 import board.move.ChessMove;
 import board.move.ChessMoveBuilder;
-import client.java.AI;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: vincent
  * Date: Feb 14, 2011
  * Time: 7:33:02 PM
- * To change this template use File | Settings | File Templates.
  */
 public class Pawn extends Piece {
 
+    /**
+     * Gets all valid piece moves for the pawn
+     * @param chessPiece piece to get moves for
+     * @param opponentsChessPieces all opponents chess pieces
+     * @param chessBoard the current chess board
+     * @param lastMove the last move performed
+     * @return a list of valid chess moves for this piece
+     */
     @Override
     public List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> opponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove) {
         List<ChessMove> initialDoubleJumpMove = getInitialDoubleJumpMoveIfPossible(chessPiece, chessBoard);
         List<ChessMove> singleJumpMoves = getSingleJumpMovesIfPossible(chessPiece, chessBoard);
         List<ChessMove> captureMoves = getCaptureMoves(chessPiece, chessBoard);
-        List<ChessMove> captureEnPassantMoves = captureEnPassantMoves(chessPiece, opponentsChessPieces, chessBoard, lastMove);
+        List<ChessMove> captureEnPassantMoves = captureEnPassantMoves(chessPiece, chessBoard, lastMove);
 
         List<ChessMove> allValidPawnMoves = new ArrayList<ChessMove>();
         allValidPawnMoves.addAll(initialDoubleJumpMove);
@@ -36,6 +40,11 @@ public class Pawn extends Piece {
         return allValidPawnMoves;
     }
 
+    /**
+     * Converts all states in which the pawn is at the end of the board and promotes them to one of the following: Q, N, R, B
+     * @param chessPiece pawn piece
+     * @param allValidPawnMoves all valid pawn moves this far
+     */
     private void convertPawnsOnEndOfBoardToPromotions(Piece chessPiece, List<ChessMove> allValidPawnMoves) {
         List<ChessMove> validPawnMovesCopy = new ArrayList<ChessMove>(allValidPawnMoves);
         PiecePosition piecePosition = chessPiece.getPosition();
@@ -50,7 +59,14 @@ public class Pawn extends Piece {
         }
     }
 
-    private List<ChessMove> captureEnPassantMoves(Piece chessPiece, List<Piece> opponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove) {
+    /**
+     * Gets all possible captures via en passant
+     * @param chessPiece pawn piece
+     * @param chessBoard the current chess board
+     * @param lastMove last move performed, must have been a double jump pawn move
+     * @return all possible captures via en passant
+     */
+    private List<ChessMove> captureEnPassantMoves(Piece chessPiece, ChessBoard chessBoard, ChessMove lastMove) {
         List<ChessMove> captureMoves = new ArrayList<ChessMove>();
         if (lastMove == null) {
             return captureMoves;
@@ -86,6 +102,12 @@ public class Pawn extends Piece {
         return captureMoves;
     }
 
+    /**
+     * Gets all direct capture moves for the pawn
+     * @param chessPiece the pawn piece
+     * @param chessBoard the current board
+     * @return all direct capture moves for the pawn
+     */
     private List<ChessMove> getCaptureMoves(Piece chessPiece, ChessBoard chessBoard) {
         List<ChessMove> captureMoves = new ArrayList<ChessMove>();
         PiecePosition pawnPosition = chessPiece.getPosition();
@@ -108,6 +130,12 @@ public class Pawn extends Piece {
         return captureMoves;
     }
 
+    /**
+     * Gets all single jump moves for the pawn
+     * @param chessPiece the pawn piece
+     * @param chessBoard the current board
+     * @return all single jump moves for the pawn
+     */
     private List<ChessMove> getSingleJumpMovesIfPossible(Piece chessPiece, ChessBoard chessBoard) {
         List<ChessMove> singleJumpMoves = new ArrayList<ChessMove>();
         PiecePosition pawnPosition = chessPiece.getPosition();
@@ -124,6 +152,12 @@ public class Pawn extends Piece {
         return singleJumpMoves;
     }
 
+    /**
+     * Gets all valid double jump moves for the pawn
+     * @param chessPiece the pawn piece
+     * @param chessBoard the current chess board
+     * @return all valid double jump moves for the pawn
+     */
     private List<ChessMove> getInitialDoubleJumpMoveIfPossible(Piece chessPiece, ChessBoard chessBoard) {
         List<ChessMove> doubleJumpMove = new ArrayList<ChessMove>();
         PiecePosition pawnPosition = chessPiece.getPosition();

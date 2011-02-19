@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
  * User: vincent
  * Date: Feb 14, 2011
  * Time: 7:04:31 PM
- * To change this template use File | Settings | File Templates.
  */
 public class PieceEnumeration {
     public static byte FREE_SPACE = 0;
@@ -41,6 +39,10 @@ public class PieceEnumeration {
 
     public static Map<Character, Byte> characterToByteMapping;
 
+    /**
+     * Initialize the map correlating the character to a byte for memory efficiency
+     * @return the character to byte map
+     */
     private static Map<Character, Byte> initializeCharacterToByteMap() {
         Map<Character, Byte> characterToByteMap = new HashMap<Character, Byte>();
         characterToByteMap.put(FREE_SPACE_CHAR, FREE_SPACE);
@@ -59,6 +61,11 @@ public class PieceEnumeration {
         return characterToByteMap;
     }
 
+    /**
+     * Gets the byte from the character to byte map correlating the pieces and their corresponding byte value
+     * @param character the character to get the byte representation of
+     * @return the byte representation of the passed character
+     */
     public static byte getByteFromCharacter(Character character) {
         if(characterToByteMapping == null) {
             characterToByteMapping = initializeCharacterToByteMap();
@@ -66,18 +73,38 @@ public class PieceEnumeration {
         return characterToByteMapping.get(character);        
     }
 
+    /**
+     * Checks to see of the piece is a white piece
+     * @param piece piece to check to see if is a white piece
+     * @return if the piece is a white piece
+     */
     public static boolean isPieceAWhitePiece(byte piece) {
         return piece <= 6 && piece >= 1;
     }
 
+    /**
+     * Checks to see of the piece is a black piece
+     * @param piece piece to check to see if is a black piece
+     * @return if the piece is a black piece
+     */
     public static boolean isPieceABlackPiece(byte piece) {
         return piece >= 7;
     }
 
+    /**
+     * Checks to see of the piece is a white king piece
+     * @param piece piece to check to see if is a white king piece
+     * @return if the piece is a white king piece
+     */
     public static boolean isWhiteKing(byte piece) {
         return piece == P1_KING;
     }
 
+    /**
+     * Checks to see of the piece is a black king piece
+     * @param piece piece to check to see if is a black king piece
+     * @return if the piece is a black king piece
+     */
     public static boolean isBlackKing(byte piece) {
         return piece == P2_KING;
     }

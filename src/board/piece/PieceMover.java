@@ -5,12 +5,17 @@ import board.move.ChessMove;
 import state.State;
 
 /**
- * Created by IntelliJ IDEA.
  * User: vincent
  * Date: 17-Feb-2011
  * Time: 9:40:24 PM
  */
 public class PieceMover {
+    /**
+     * Moves the piece appropriately and generates a new state from the move on the current board
+     * @param chessBoard the current board
+     * @param chessMove to move to be performed on the current board
+     * @return a new state from the move on the current board
+     */
     public static State generateNewStateWithMove(ChessBoard chessBoard, ChessMove chessMove) {
         ChessBoard chessBoardCopy = chessBoard.copy();
         byte[][] board = chessBoardCopy.getBoard();
