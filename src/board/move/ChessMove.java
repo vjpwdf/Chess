@@ -13,6 +13,7 @@ public class ChessMove {
     private byte toRank;
     private char promotion = '\0';
     private boolean capturedViaEnPassant = false;
+    private boolean casteling = false;
 
     /**
      * Gets the file the piece came from
@@ -123,6 +124,22 @@ public class ChessMove {
      */
     public void setCapturedViaEnPassant(boolean capturedViaEnPassant) {
         this.capturedViaEnPassant = capturedViaEnPassant;
+    }
+
+    /**
+     * Get whether the move is for casteling
+     * @return whether the move is for casteling
+     */
+    public boolean isCasteling() {
+        return casteling;
+    }
+
+    /**
+     * Set whether the move is for casteling
+     * @param casteling whether the move is for casteling
+     */
+    public void setCasteling(boolean casteling) {
+        this.casteling = casteling;
     }
 
     /**

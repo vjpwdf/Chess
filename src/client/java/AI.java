@@ -143,6 +143,11 @@ public class AI extends BaseAI {
         if (System.getProperty("manual").equals("false")) {
             stateEngine.setCurrentBoard(board);
             ChessMove nextMoveToPerform = stateEngine.getNextStateFromStateChooser(stateChooser, isWhitePlayer);
+            if(nextMoveToPerform == null) {
+                System.out.println("Checkmate");
+                return false;
+            }
+            System.out.println("Making move: " + nextMoveToPerform);
             pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank() + 1, nextMoveToPerform.getPromotion());
         }
 

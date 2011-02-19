@@ -44,6 +44,22 @@ public class ChessMoveBuilder {
 
     /**
      * Builds a chess move from two positions
+     * @param kingPosition kings position
+     * @param rookPosition rooks position
+     * @return a valid chess move
+     */
+    public static ChessMove buildChessMoveForCasteling(PiecePosition kingPosition, PiecePosition rookPosition) {
+        ChessMove chessMove = new ChessMove();
+        chessMove.setFromRank((byte) kingPosition.getY());
+        chessMove.setFromFile((char) (kingPosition.getX()+97));
+        chessMove.setToRank((byte) rookPosition.getY());
+        chessMove.setToFile((char) (rookPosition.getX()+97));
+        chessMove.setCasteling(true);
+        return chessMove;
+    }
+
+    /**
+     * Builds a chess move from two positions
      * @param x from position
      * @param y to position
      * @param capturedViaEnPassant if the piece was captured via en passant

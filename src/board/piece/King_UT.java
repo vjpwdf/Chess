@@ -2,9 +2,11 @@ package board.piece;
 
 import board.BoardConverter;
 import board.ChessBoard;
+import board.move.ChessMove;
 import org.junit.Test;
 import state.StateEngine;
 import state.StateNode;
+import state.chooser.RandomStateChooser;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -157,5 +159,59 @@ public class King_UT {
         StateNode state = StateEngine.convertBoardToState(board, null);
         StateEngine.generateFutureStates(state, false, null);
         assertEquals(9, state.getChildrenStates().size());
+    }
+
+    @Test
+    public void testGetValidPieceMoves_TestProblemForBlack() throws Exception {
+        char charBoard[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', 'b', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', 'p', '.', '.', 'Q', 'k', '.', '.'},
+                {'.', 'p', '.', '.', 'p', '.', '.', '.'},
+                {'.', 'P', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', 'r', '.'},
+                {'.', '.', 'K', '.', '.', '.', 'n', '.'}
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        StateNode state = StateEngine.convertBoardToState(board, null);
+        ChessMove move = new RandomStateChooser().chooseNextStateBasedOnCurrentState(state, false).getMove();
+        assertEquals(4, state.getChildrenStates().size());
+    }
+
+    @Test
+    public void testGetValidPieceMoves_TestProblemForWhite() throws Exception {
+        char charBoard[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', 'k', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', 'n', '.'},
+                {'p', '.', '.', '.', '.', 'p', '.', 'p'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', 'K', 'b', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', 'p', '.', '.', '.'},
+                {'.', 'b', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        StateNode state = StateEngine.convertBoardToState(board, null);
+        ChessMove move = new RandomStateChooser().chooseNextStateBasedOnCurrentState(state, true).getMove();
+        assertEquals(4, state.getChildrenStates().size());
+    }
+
+    @Test
+    public void testGetValidPieceMoves_TestProblemForWhite2() throws Exception {
+        char charBoard[][] = new char[][] {
+                {'.', 'b', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', 'p', '.', '.'},
+                {'.', '.', 'N', 'k', '.', '.', '.', '.'},
+                {'.', '.', '.', 'Q', 'b', '.', '.', '.'},
+                {'P', '.', '.', 'B', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', 'K', '.', '.', '.', '.', '.'},
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        StateNode state = StateEngine.convertBoardToState(board, null);
+        ChessMove move = new RandomStateChooser().chooseNextStateBasedOnCurrentState(state, false).getMove();
+        assertEquals(2, state.getChildrenStates().size());
     }
 }

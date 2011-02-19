@@ -4,7 +4,7 @@ import client.java.Client;
 import com.sun.jna.Pointer;
 
 ///A chess piece
-class Piece {
+public class Piece {
     Pointer ptr;
     int ID;
     int iteration;
