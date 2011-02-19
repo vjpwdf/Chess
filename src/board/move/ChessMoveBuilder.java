@@ -41,9 +41,9 @@ public class ChessMoveBuilder {
 
     public static ChessMove convertMoveToChessMove(Move move) {
         ChessMove chessMove = new ChessMove();
-        chessMove.setFromFile((char) (move.getFromFile()+97));
+        chessMove.setFromFile((char) (move.getFromFile()+96));
         chessMove.setFromRank((byte) (move.getFromRank()-1));
-        chessMove.setToFile((char) (move.getToFile()+97));
+        chessMove.setToFile((char) (move.getToFile()+96));
         chessMove.setToRank((byte) (move.getToRank()-1));
         return chessMove;
     }

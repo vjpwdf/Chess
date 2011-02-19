@@ -5,6 +5,7 @@ import board.ChessBoard;
 import board.move.ChessMove;
 import board.move.ChessMoveBuilder;
 import board.piece.Piece;
+import board.piece.PieceEnumeration;
 import board.piece.PieceMover;
 import client.java.AI;
 import client.java.Move;
@@ -45,10 +46,8 @@ public class StateEngine {
         List<Piece> chessPieces = state.getState().getChessBoard().getPiecesForPlayer(isWhitePlayer);
         List<Piece> opponentsChessPieces = state.getState().getChessBoard().getPiecesForPlayer(!isWhitePlayer);
         List<ChessMove> allValidChessPieceMoves = new ArrayList<ChessMove>();
-        try {
+        if(AI.moves != null && AI.moves.length > 0) {
             lastMove = ChessMoveBuilder.convertMoveToChessMove(AI.moves[0]);
-        } catch (Exception e) {
-
         }
         for (Piece chessPiece : chessPieces) {
             List<ChessMove> validChessPieceMoves = chessPiece.getValidPieceMoves(chessPiece, opponentsChessPieces, state.getState().getChessBoard(), lastMove);
@@ -57,7 +56,6 @@ public class StateEngine {
             }
         }
         buildNewStatesFromMoves(allValidChessPieceMoves, state.getState().getChessBoard(), state);
-        System.out.println("");
     }
 
     private static void buildNewStatesFromMoves(List<ChessMove> allValidChessPieceMoves, ChessBoard chessBoard, StateNode state) {
@@ -67,6 +65,7 @@ public class StateEngine {
         for (ChessMove validChessPieceMove : allValidChessPieceMoves) {
             State futureState = PieceMover.generateNewStateWithMove(chessBoard, validChessPieceMove);
             StateNode futureStateNode = new StateNode();
+            futureStateNode.setParent(state);
             futureStateNode.setState(futureState);
             state.getChildrenStates().add(futureStateNode);
         }
@@ -79,5 +78,18 @@ public class StateEngine {
         state.setChessBoard(board);
         stateNode.setState(state);
         return stateNode;
+    }
+
+    public static boolean isCheckState(ChessBoard chessBoard) {
+        byte[][] board = chessBoard.getBoard();
+        int kingCount = 0;
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                if(PieceEnumeration.isBlackKing(board[i][j]) || PieceEnumeration.isWhiteKing(board[i][j])) {
+                    kingCount++;
+                }
+            }
+        }
+        return kingCount != 2;
     }
 }
