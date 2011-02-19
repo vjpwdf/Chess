@@ -2,7 +2,9 @@ package board.piece;
 
 import board.ChessBoard;
 import board.move.ChessMove;
+import board.move.ChessMoveBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +16,33 @@ import java.util.List;
  */
 public class King extends Piece {
     @Override
-    public List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> oponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove) {
-        return null;
+    public List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> opponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove) {
+        List<ChessMove> validKingMoves = new ArrayList<ChessMove>();
+        PiecePosition piecePosition = chessPiece.getPosition();
+        byte[][] board = chessBoard.getBoard();
+        addValidMoveIfAvailable(1, 1, piecePosition, board, chessPiece, validKingMoves);
+        addValidMoveIfAvailable(-1, -1, piecePosition, board, chessPiece, validKingMoves);
+        addValidMoveIfAvailable(1, -1, piecePosition, board, chessPiece, validKingMoves);
+        addValidMoveIfAvailable(-1, 1, piecePosition, board, chessPiece, validKingMoves);
+        addValidMoveIfAvailable(1, 0, piecePosition, board, chessPiece, validKingMoves);
+        addValidMoveIfAvailable(-1, 0, piecePosition, board, chessPiece, validKingMoves);
+        addValidMoveIfAvailable(0, 1, piecePosition, board, chessPiece, validKingMoves);
+        addValidMoveIfAvailable(0, -1, piecePosition, board, chessPiece, validKingMoves);
+        return validKingMoves;
+    }
+
+    private void addValidMoveIfAvailable(int xInc, int yInc, PiecePosition piecePosition, byte[][] board, Piece chessPiece, List<ChessMove> validKingMoves) {
+        if(piecePosition.getX() + xInc < 0 || piecePosition.getX() +xInc > 7 || piecePosition.getY() +yInc < 0 || piecePosition.getY() + yInc > 7) {
+            return;
+        }
+        if(chessPiece.isWhitePlayer()) {
+            if(board[piecePosition.getX()+xInc][piecePosition.getY()+yInc] == PieceEnumeration.FREE_SPACE || PieceEnumeration.isPieceABlackPiece(board[piecePosition.getX()+xInc][piecePosition.getY()+yInc])) {
+                validKingMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(piecePosition.getX()+xInc, piecePosition.getY()+yInc)));
+            }
+        } else {
+            if(board[piecePosition.getX()+xInc][piecePosition.getY()+yInc] == PieceEnumeration.FREE_SPACE || PieceEnumeration.isPieceAWhitePiece(board[piecePosition.getX()+xInc][piecePosition.getY()+yInc])) {
+                validKingMoves.add(ChessMoveBuilder.buildChessMoveFromPositions(piecePosition, new PiecePosition(piecePosition.getX()+xInc, piecePosition.getY()+yInc)));
+            }
+        }
     }
 }
