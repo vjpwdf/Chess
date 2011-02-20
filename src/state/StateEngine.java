@@ -4,6 +4,7 @@ import board.BoardConverter;
 import board.ChessBoard;
 import board.move.ChessMove;
 import board.move.ChessMoveBuilder;
+import board.move.MoveTracker;
 import board.piece.Piece;
 import board.piece.PieceEnumeration;
 import board.piece.PieceMover;
@@ -52,7 +53,7 @@ public class StateEngine {
         rootState.setChildrenStates(new ArrayList<StateNode>());
         rootState.setParent(null);
         State state = stateChooser.chooseNextStateBasedOnCurrentState(rootState, isWhitePlayer);
-        return state==null?null:state.getMove();
+        return state == null ? null : state.getMove();
     }
 
     /**
@@ -68,22 +69,62 @@ public class StateEngine {
         List<ChessMove> allValidChessPieceMoves = new ArrayList<ChessMove>();
         lastMove = convertLastMoveFromServer(lastMove);
         getAllValidChessPieceMoves(state, lastMove, chessPieces, opponentsChessPieces, allValidChessPieceMoves);
-        addCastelingIfPossible(state, chessPieces, allValidChessPieceMoves, isWhitePlayer);
+//        addCastelingIfPossible(state, chessPieces, allValidChessPieceMoves, isWhitePlayer);
+//        addCastelingIfPossible(state, allValidChessPieceMoves, isWhitePlayer);
         buildNewStatesFromMoves(allValidChessPieceMoves, state.getState().getChessBoard(), state);
+    }
+
+    private static void addCastelingIfPossible(StateNode state, List<ChessMove> allValidChessPieceMoves, boolean whitePlayer) {
+        byte[][] board = state.getState().getChessBoard().getBoard();
+        if (whitePlayer) {
+            if (pieceHasMovedFrom(state, 'e', 0)) {
+                if (pieceHasMovedFrom(state, 'h', 0) && board[6][0] == PieceEnumeration.FREE_SPACE && board[5][0] == PieceEnumeration.FREE_SPACE) {
+                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(7, 0)));
+                }
+                if (pieceHasMovedFrom(state, 'a', 0) && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE) {
+                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(0, 0)));
+                }
+            }
+        } else {
+            if (pieceHasMovedFrom(state, 'e', 7)) {
+                if (pieceHasMovedFrom(state, 'h', 7) && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE) {
+                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(7, 7)));
+                }
+                if (pieceHasMovedFrom(state, 'a', 7) && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE) {
+                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(0, 7)));
+                }
+            }
+        }
+    }
+
+    private static boolean pieceHasMovedFrom(StateNode state, char fromFile, int fromRank) {
+        List<ChessMove> chessMoveList = new ArrayList<ChessMove>(MoveTracker.allMoves);
+        StateNode iterator = state;
+        while(iterator.getParent() != null) {
+            chessMoveList.add(state.getState().getMove());
+            iterator = iterator.getParent();
+        }
+        for (ChessMove move : chessMoveList) {
+            if (move.getFromFile() == fromFile && move.getFromRank() == fromRank) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * See if player can castel
-     * @param state current state
-     * @param chessPieces list of chess pieces
+     *
+     * @param state                   current state
+     * @param chessPieces             list of chess pieces
      * @param allValidChessPieceMoves all valid chess moves this far
-     * @param isWhitePlayer indicator if white or black player
+     * @param isWhitePlayer           indicator if white or black player
      */
     private static void addCastelingIfPossible(StateNode state, List<Piece> chessPieces, List<ChessMove> allValidChessPieceMoves, boolean isWhitePlayer) {
         List<client.java.Piece> rookPieces = new ArrayList<client.java.Piece>();
         client.java.Piece kingPiece = null;
         byte[][] board = state.getState().getChessBoard().getBoard();
-        if(AI.pieces == null) {
+        if (AI.pieces == null) {
             return;
         }
         for (client.java.Piece piece : AI.pieces) {
@@ -110,19 +151,19 @@ public class StateEngine {
         }
         if (isWhitePlayer) {
             for (client.java.Piece rookPiece : rookPieces) {
-                if(rookPiece.getFile() == 8 && board[6][0] == PieceEnumeration.FREE_SPACE && board[5][0] == PieceEnumeration.FREE_SPACE) {
+                if (rookPiece.getFile() == 8 && board[6][0] == PieceEnumeration.FREE_SPACE && board[5][0] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(7, 0)));
                 }
-                if(rookPiece.getFile() == 0 && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE) {
+                if (rookPiece.getFile() == 0 && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(0, 0)));
                 }
             }
         } else {
             for (client.java.Piece rookPiece : rookPieces) {
-                if(rookPiece.getFile() == 8 && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE) {
+                if (rookPiece.getFile() == 8 && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(7, 7)));
                 }
-                if(rookPiece.getFile() == 0 && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE) {
+                if (rookPiece.getFile() == 0 && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(0, 7)));
                 }
             }
@@ -138,6 +179,9 @@ public class StateEngine {
     private static ChessMove convertLastMoveFromServer(ChessMove lastMove) {
         if (AI.moves != null && AI.moves.length > 0) {
             lastMove = ChessMoveBuilder.convertMoveToChessMove(AI.moves[0]);
+        }
+        if (lastMove != null) {
+            MoveTracker.allMoves.add(lastMove);
         }
         return lastMove;
     }

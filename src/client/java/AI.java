@@ -1,6 +1,7 @@
 package client.java;
 
 import board.move.ChessMove;
+import board.move.MoveTracker;
 import com.sun.jna.Pointer;
 import player.Player;
 import state.State;
@@ -97,7 +98,7 @@ public class AI extends BaseAI {
             if (indexOfPieceFound == -1) {
                 System.out.println("Unknown piece moved from " + moves[0].getFromFile() + moves[0].getFromRank());
             } else {
-                System.out.println("Opponent moved piece " + (char) pieces[indexOfPieceFound].getType() + " to " + moves[0].getToFile() + moves[0].getToRank());
+                System.out.println("Opponent moved piece " + (char) (pieces[indexOfPieceFound].getType()) + " to " + ((char)(moves[0].getToFile()+96)) + moves[0].getToRank());
             }
         }
 
@@ -147,7 +148,8 @@ public class AI extends BaseAI {
                 System.out.println("Checkmate");
                 return false;
             }
-            System.out.println("Making move: " + nextMoveToPerform);
+            System.out.println("Making move: " + nextMoveToPerform.getFromFile() + (nextMoveToPerform.getFromRank()+1) + nextMoveToPerform.getToFile() + (nextMoveToPerform.getToRank()+1) + nextMoveToPerform.getPromotion());
+            MoveTracker.allMoves.add(nextMoveToPerform);
             pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank() + 1, nextMoveToPerform.getPromotion());
         }
 
