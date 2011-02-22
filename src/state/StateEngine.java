@@ -75,36 +75,65 @@ public class StateEngine {
 
     /**
      * Adds casteling to a list of moves if it is possible
-     * @param state state to check for casteling of
+     *
+     * @param state                   state to check for casteling of
      * @param allValidChessPieceMoves list of current valid chess piece moves
-     * @param whitePlayer whether the state is for black or white
+     * @param whitePlayer             whether the state is for black or white
      */
     private static void addCastelingIfPossible(StateNode state, List<ChessMove> allValidChessPieceMoves, boolean whitePlayer) {
-        byte[][] board = state.getState().getChessBoard().getBoard();
+        ChessBoard chessBoard = state.getState().getChessBoard();
+        byte[][] board = chessBoard.getBoard();
         if (whitePlayer) {
-            if (!pieceHasMovedFrom(state, 'e', 0)) {
-                if (!pieceHasMovedFrom(state, 'h', 0) && board[6][0] == PieceEnumeration.FREE_SPACE && board[5][0] == PieceEnumeration.FREE_SPACE) {
-                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(7, 0)));
+            if (!pieceHasMovedFrom(state, 'e', 0) && PieceEnumeration.isWhiteKing(board[4][0])) {
+                if (!pieceHasMovedFrom(state, 'h', 0) && board[6][0] == PieceEnumeration.FREE_SPACE && board[5][0] == PieceEnumeration.FREE_SPACE && board[7][0] == PieceEnumeration.P1_ROOK) {
+                    ChessMove kingSideCastelMove = ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(7, 0));
+                    if (kingDoesNotPassThroughCheck(chessBoard, kingSideCastelMove, 'f', 0, whitePlayer)) {
+                        allValidChessPieceMoves.add(kingSideCastelMove);
+                    }
                 }
-                if (!pieceHasMovedFrom(state, 'a', 0) && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE) {
-                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(0, 0)));
+                if (!pieceHasMovedFrom(state, 'a', 0) && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE  && board[0][0] == PieceEnumeration.P1_ROOK) {
+                    ChessMove queenSideCastelMove = ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(0, 0));
+                    if (kingDoesNotPassThroughCheck(chessBoard, queenSideCastelMove, 'd', 0, whitePlayer)) {
+                        allValidChessPieceMoves.add(queenSideCastelMove);
+                    }
                 }
             }
         } else {
-            if (!pieceHasMovedFrom(state, 'e', 7)) {
-                if (!pieceHasMovedFrom(state, 'h', 7) && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE) {
-                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(7, 7)));
+            if (!pieceHasMovedFrom(state, 'e', 7)  && PieceEnumeration.isBlackKing(board[4][7])) {
+                if (!pieceHasMovedFrom(state, 'h', 7) && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE  && board[7][7] == PieceEnumeration.P2_ROOK) {
+                    ChessMove kingSideCastelMove = ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(7, 7));
+                    if (kingDoesNotPassThroughCheck(chessBoard, kingSideCastelMove, 'f', 7, whitePlayer)) {
+                        allValidChessPieceMoves.add(kingSideCastelMove);
+                    }
                 }
-                if (!pieceHasMovedFrom(state, 'a', 7) && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE) {
-                    allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(0, 7)));
+                if (!pieceHasMovedFrom(state, 'a', 7) && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE  && board[0][7] == PieceEnumeration.P2_ROOK) {
+                    ChessMove queenSideCastelMove = ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(0, 7));
+                    if (kingDoesNotPassThroughCheck(chessBoard, queenSideCastelMove, 'd', 7, whitePlayer)) {
+                        allValidChessPieceMoves.add(queenSideCastelMove);
+                    }
                 }
             }
         }
     }
 
+    private static boolean kingDoesNotPassThroughCheck(ChessBoard board, ChessMove castelMove, char toFile, int toRank, boolean isWhitePlayer) {
+        State state = PieceMover.generateNewStateWithMove(board, castelMove);
+        List<Piece> opponentsChessPieces = state.getChessBoard().getPiecesForPlayer(!isWhitePlayer);
+        for (Piece opponentsChessPiece : opponentsChessPieces) {
+            List<ChessMove> chessMoves = opponentsChessPiece.getValidPieceMoves(opponentsChessPiece, null, state.getChessBoard(), null);
+            for (ChessMove chessMove : chessMoves) {
+                if (chessMove.getToFile() == toFile && chessMove.getToRank() == toRank) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Get whether piece has moved from a given file or rank
-     * @param state state to check to see if piece has moved from
+     *
+     * @param state    state to check to see if piece has moved from
      * @param fromFile file to check to see if piece moved from
      * @param fromRank rank to check to see if piece moved from
      * @return whether piece has moved from a given file or rank
@@ -112,7 +141,7 @@ public class StateEngine {
     private static boolean pieceHasMovedFrom(StateNode state, char fromFile, int fromRank) {
         List<ChessMove> chessMoveList = new ArrayList<ChessMove>(MoveTracker.allMoves);
         StateNode iterator = state;
-        while(iterator.getParent() != null) {
+        while (iterator.getParent() != null) {
             chessMoveList.add(state.getState().getMove());
             iterator = iterator.getParent();
         }
