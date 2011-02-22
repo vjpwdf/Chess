@@ -98,7 +98,7 @@ public class AI extends BaseAI {
             if (indexOfPieceFound == -1) {
                 System.out.println("Unknown piece moved from " + moves[0].getFromFile() + moves[0].getFromRank());
             } else {
-                System.out.println("Opponent moved piece " + (char) (pieces[indexOfPieceFound].getType()) + " to " + ((char)(moves[0].getToFile()+96)) + moves[0].getToRank());
+                System.out.println("Opponent moved piece " + (char) (pieces[indexOfPieceFound].getType()) + " to " + ((char) (moves[0].getToFile() + 96)) + moves[0].getToRank());
             }
         }
 
@@ -144,13 +144,21 @@ public class AI extends BaseAI {
         if (System.getProperty("manual").equals("false")) {
             stateEngine.setCurrentBoard(board);
             ChessMove nextMoveToPerform = stateEngine.getNextStateFromStateChooser(stateChooser, isWhitePlayer);
-            if(nextMoveToPerform == null) {
+            if (nextMoveToPerform == null) {
                 System.out.println("Checkmate");
-                return false;
+                return true;
             }
-            System.out.println("Making move: " + nextMoveToPerform.getFromFile() + (nextMoveToPerform.getFromRank()+1) + nextMoveToPerform.getToFile() + (nextMoveToPerform.getToRank()+1) + nextMoveToPerform.getPromotion());
+            System.out.println("Making move: " + nextMoveToPerform.getFromFile() + (nextMoveToPerform.getFromRank() + 1) + nextMoveToPerform.getToFile() + (nextMoveToPerform.getToRank() + 1) + nextMoveToPerform.getPromotion());
             MoveTracker.allMoves.add(nextMoveToPerform);
-            pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank() + 1, nextMoveToPerform.getPromotion());
+            if (nextMoveToPerform.isCasteling()) {
+                if (nextMoveToPerform.getToFile() - nextMoveToPerform.getFromFile() > 0) {
+                    pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getFromFile())+2, nextMoveToPerform.getFromFile(), nextMoveToPerform.getPromotion());
+                } else {
+                    pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getFromFile())-2, nextMoveToPerform.getFromFile(), nextMoveToPerform.getPromotion());
+                }
+            } else {
+                pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank() + 1, nextMoveToPerform.getPromotion());
+            }
         }
 
         while (!validInput && System.getProperty("manual").equals("true")) {

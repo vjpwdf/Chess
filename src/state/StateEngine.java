@@ -70,27 +70,27 @@ public class StateEngine {
         lastMove = convertLastMoveFromServer(lastMove);
         getAllValidChessPieceMoves(state, lastMove, chessPieces, opponentsChessPieces, allValidChessPieceMoves);
 //        addCastelingIfPossible(state, chessPieces, allValidChessPieceMoves, isWhitePlayer);
-//        addCastelingIfPossible(state, allValidChessPieceMoves, isWhitePlayer);
+        addCastelingIfPossible(state, allValidChessPieceMoves, isWhitePlayer);
         buildNewStatesFromMoves(allValidChessPieceMoves, state.getState().getChessBoard(), state);
     }
 
     private static void addCastelingIfPossible(StateNode state, List<ChessMove> allValidChessPieceMoves, boolean whitePlayer) {
         byte[][] board = state.getState().getChessBoard().getBoard();
         if (whitePlayer) {
-            if (pieceHasMovedFrom(state, 'e', 0)) {
-                if (pieceHasMovedFrom(state, 'h', 0) && board[6][0] == PieceEnumeration.FREE_SPACE && board[5][0] == PieceEnumeration.FREE_SPACE) {
+            if (!pieceHasMovedFrom(state, 'e', 0)) {
+                if (!pieceHasMovedFrom(state, 'h', 0) && board[6][0] == PieceEnumeration.FREE_SPACE && board[5][0] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(7, 0)));
                 }
-                if (pieceHasMovedFrom(state, 'a', 0) && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE) {
+                if (!pieceHasMovedFrom(state, 'a', 0) && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(0, 0)));
                 }
             }
         } else {
-            if (pieceHasMovedFrom(state, 'e', 7)) {
-                if (pieceHasMovedFrom(state, 'h', 7) && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE) {
+            if (!pieceHasMovedFrom(state, 'e', 7)) {
+                if (!pieceHasMovedFrom(state, 'h', 7) && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(7, 7)));
                 }
-                if (pieceHasMovedFrom(state, 'a', 7) && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE) {
+                if (!pieceHasMovedFrom(state, 'a', 7) && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE) {
                     allValidChessPieceMoves.add(ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(0, 7)));
                 }
             }
