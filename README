@@ -1,3 +1,12 @@
+1) jna.jar and junit-4.4.jar should be in the src directory
+2) to compile: run javac -cp jna.jar:junit-4.4.jar:. **/**/*.java from within the src directory
+3) to run white type java -cp jna.jar:. -Djava.library.path=. -Dmanual=false client.java.Main host
+ from w/in the src directory (note: you may have to export your LD_LIBRARY_PATH=path to libclient.so)
+4) to run black type java -cp jna.jar:. -Djava.library.path=. -Dmanual=false client.java.Main host #
+ from w/in the src directory (note: you may have to export your LD_LIBRARY_PATH=path to libclient.so)
+5) to run version 2 of the server in the src directory there is serverV2 folder, simply enter that and type python main.py
+
+
 --The Quick How Too--
 
 Choose a language: C++, Java, Python
