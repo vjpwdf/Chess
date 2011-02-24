@@ -152,9 +152,9 @@ public class AI extends BaseAI {
             MoveTracker.allMoves.add(nextMoveToPerform);
             if (nextMoveToPerform.isCasteling()) {
                 if (nextMoveToPerform.getToFile() - nextMoveToPerform.getFromFile() > 0) {
-                    pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getFromFile())+2, nextMoveToPerform.getFromFile(), nextMoveToPerform.getPromotion());
+                    pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getFromFile())+2, nextMoveToPerform.getFromRank() + 1, nextMoveToPerform.getPromotion());
                 } else {
-                    pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getFromFile())-2, nextMoveToPerform.getFromFile(), nextMoveToPerform.getPromotion());
+                    pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getFromFile())-2, nextMoveToPerform.getFromRank() + 1, nextMoveToPerform.getPromotion());
                 }
             } else {
                 pieces[getIndexOfPiece(nextMoveToPerform)].move(letterToFile(nextMoveToPerform.getToFile()), nextMoveToPerform.getToRank() + 1, nextMoveToPerform.getPromotion());

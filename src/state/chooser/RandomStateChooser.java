@@ -4,8 +4,6 @@ import state.State;
 import state.StateEngine;
 import state.StateNode;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -23,27 +21,9 @@ public class RandomStateChooser implements StateChooser {
     @Override
     public State chooseNextStateBasedOnCurrentState(StateNode state, boolean isWhitePlayer) {
         StateEngine.generateFutureStates(state, isWhitePlayer, null);
-        Random random = new Random();
-        List<StateNode> futureMoves = state.getChildrenStates();
-        List<StateNode> validFutureMoves = new ArrayList<StateNode>();
-        for (StateNode futureNode : futureMoves) {
-            StateEngine.generateFutureStates(futureNode, !isWhitePlayer, futureNode.getState().getMove());
-            List<StateNode> opponentsMoves = new ArrayList<StateNode>(futureNode.getChildrenStates());
-            boolean shouldKeepState = true;
-            for (StateNode node : opponentsMoves) {
-                if(StateEngine.isCheckState(node.getState().getChessBoard())) {
-                    shouldKeepState = false;
-                    break;
-                }
-            }
-            if(shouldKeepState) {
-                validFutureMoves.add(futureNode);
-            }
-        }
-        state.setChildrenStates(validFutureMoves);
         if(state.getChildrenStates().size() == 0) {
             return null;
         }
-        return state.getChildrenStates().get(Math.abs(random.nextInt()%state.getChildrenStates().size())).getState();
+        return state.getChildrenStates().get(Math.abs(new Random().nextInt()%state.getChildrenStates().size())).getState();
     }
 }

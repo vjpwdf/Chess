@@ -70,7 +70,7 @@ public class StateEngine {
         lastMove = convertLastMoveFromServer(lastMove);
         getAllValidChessPieceMoves(state, lastMove, chessPieces, opponentsChessPieces, allValidChessPieceMoves);
         addCastelingIfPossible(state, allValidChessPieceMoves, isWhitePlayer);
-        buildNewStatesFromMoves(allValidChessPieceMoves, state.getState().getChessBoard(), state);
+        buildNewStatesFromMoves(allValidChessPieceMoves, state.getState().getChessBoard(), state, isWhitePlayer);
     }
 
     /**
@@ -91,7 +91,7 @@ public class StateEngine {
                         allValidChessPieceMoves.add(kingSideCastelMove);
                     }
                 }
-                if (!pieceHasMovedFrom(state, 'a', 0) && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE  && board[0][0] == PieceEnumeration.P1_ROOK) {
+                if (!pieceHasMovedFrom(state, 'a', 0) && board[1][0] == PieceEnumeration.FREE_SPACE && board[2][0] == PieceEnumeration.FREE_SPACE && board[3][0] == PieceEnumeration.FREE_SPACE && board[0][0] == PieceEnumeration.P1_ROOK) {
                     ChessMove queenSideCastelMove = ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 0), new PiecePosition(0, 0));
                     if (kingDoesNotPassThroughCheck(chessBoard, queenSideCastelMove, 'd', 0, whitePlayer)) {
                         allValidChessPieceMoves.add(queenSideCastelMove);
@@ -99,14 +99,14 @@ public class StateEngine {
                 }
             }
         } else {
-            if (!pieceHasMovedFrom(state, 'e', 7)  && PieceEnumeration.isBlackKing(board[4][7])) {
-                if (!pieceHasMovedFrom(state, 'h', 7) && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE  && board[7][7] == PieceEnumeration.P2_ROOK) {
+            if (!pieceHasMovedFrom(state, 'e', 7) && PieceEnumeration.isBlackKing(board[4][7])) {
+                if (!pieceHasMovedFrom(state, 'h', 7) && board[6][7] == PieceEnumeration.FREE_SPACE && board[5][7] == PieceEnumeration.FREE_SPACE && board[7][7] == PieceEnumeration.P2_ROOK) {
                     ChessMove kingSideCastelMove = ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(7, 7));
                     if (kingDoesNotPassThroughCheck(chessBoard, kingSideCastelMove, 'f', 7, whitePlayer)) {
                         allValidChessPieceMoves.add(kingSideCastelMove);
                     }
                 }
-                if (!pieceHasMovedFrom(state, 'a', 7) && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE  && board[0][7] == PieceEnumeration.P2_ROOK) {
+                if (!pieceHasMovedFrom(state, 'a', 7) && board[1][7] == PieceEnumeration.FREE_SPACE && board[2][7] == PieceEnumeration.FREE_SPACE && board[3][7] == PieceEnumeration.FREE_SPACE && board[0][7] == PieceEnumeration.P2_ROOK) {
                     ChessMove queenSideCastelMove = ChessMoveBuilder.buildChessMoveForCasteling(new PiecePosition(4, 7), new PiecePosition(0, 7));
                     if (kingDoesNotPassThroughCheck(chessBoard, queenSideCastelMove, 'd', 7, whitePlayer)) {
                         allValidChessPieceMoves.add(queenSideCastelMove);
@@ -193,18 +193,56 @@ public class StateEngine {
      * @param allValidChessPieceMoves all valid chess piece moves to perform
      * @param chessBoard              the board to perform the moves on
      * @param state                   the state to perform the moves on
+     * @param whitePlayer             what player to generate opponents moves for
      */
-    private static void buildNewStatesFromMoves(List<ChessMove> allValidChessPieceMoves, ChessBoard chessBoard, StateNode state) {
+    private static void buildNewStatesFromMoves(List<ChessMove> allValidChessPieceMoves, ChessBoard chessBoard, StateNode state, boolean whitePlayer) {
         if (state.getChildrenStates() == null) {
             state.setChildrenStates(new ArrayList<StateNode>());
         }
+        state.getChildrenStates().clear();
         for (ChessMove validChessPieceMove : allValidChessPieceMoves) {
             State futureState = PieceMover.generateNewStateWithMove(chessBoard, validChessPieceMove);
             StateNode futureStateNode = new StateNode();
             futureStateNode.setParent(state);
             futureStateNode.setState(futureState);
-            state.getChildrenStates().add(futureStateNode);
+            if (!futureStateCausesCheck(futureState, whitePlayer)) {
+                state.getChildrenStates().add(futureStateNode);
+            }
         }
+    }
+
+    private static boolean futureStateCausesCheck(State futureState, boolean whitePlayer) {
+        List<Piece> opponentsPieces = futureState.getChessBoard().getPiecesForPlayer(!whitePlayer);
+        PiecePosition kingPosition = getKingPositionForPlayer(whitePlayer, futureState.getChessBoard().getBoard());
+        for (Piece opponentsPiece : opponentsPieces) {
+            List<ChessMove> opponentsMoves = opponentsPiece.getValidPieceMoves(opponentsPiece, null, futureState.getChessBoard(), futureState.getMove());
+            for (ChessMove opponentsMove : opponentsMoves) {
+                if(kingPosition.getX() == opponentsMove.getToFileByte() && kingPosition.getY() == opponentsMove.getToRank()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static PiecePosition getKingPositionForPlayer(boolean whitePlayer, byte[][] board) {
+        PiecePosition kingPosition = new PiecePosition();
+        for(int x = 0; x < 8; x++) {
+            for(int y = 0; y < 8; y++) {
+                if(whitePlayer) {
+                    if(PieceEnumeration.isWhiteKing(board[x][y])) {
+                        kingPosition.setX(x);
+                        kingPosition.setY(y);
+                    }
+                } else {
+                    if(PieceEnumeration.isBlackKing(board[x][y])) {
+                        kingPosition.setX(x);
+                        kingPosition.setY(y);
+                    }
+                }
+            }
+        }
+        return kingPosition;
     }
 
     /**
