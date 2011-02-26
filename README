@@ -6,6 +6,7 @@
  from w/in the src directory (note: you may have to export your LD_LIBRARY_PATH=path to libclient.so)
 5) to run version 2 of the server in the src directory there is serverV2 folder, simply enter that and type python main.py
 
+Note: if you want to run manually against the AI just set -Dmanual=true
 
 --The Quick How Too--
 
