@@ -7,7 +7,7 @@ import player.Player;
 import state.State;
 import state.StateEngine;
 import state.StateNode;
-import state.chooser.RandomStateChooser;
+import state.chooser.MiniMaxStateChooser;
 import state.chooser.StateChooser;
 
 import java.io.BufferedReader;
@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
 
 public class AI extends BaseAI {
     public static StateEngine stateEngine = new StateEngine();
-    private StateChooser stateChooser = new RandomStateChooser();
+    private StateChooser stateChooser = new MiniMaxStateChooser();
     private static Boolean isWhitePlayer = null;
 
     /**

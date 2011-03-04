@@ -37,6 +37,11 @@ public class King extends Piece {
         return validKingMoves;
     }
 
+    @Override
+    public int getPieceValue() {
+        return 0;
+    }
+
     /**
      * Adds a valid move for the king if possible
      * @param xInc x advance

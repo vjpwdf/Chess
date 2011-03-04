@@ -40,6 +40,11 @@ public class Pawn extends Piece {
         return allValidPawnMoves;
     }
 
+    @Override
+    public int getPieceValue() {
+        return 1;
+    }
+
     /**
      * Converts all states in which the pawn is at the end of the board and promotes them to one of the following: Q, N, R, B
      * @param chessPiece pawn piece

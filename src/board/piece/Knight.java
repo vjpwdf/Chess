@@ -41,6 +41,11 @@ public class Knight extends Piece {
         return validKnightMoves;
     }
 
+    @Override
+    public int getPieceValue() {
+        return 3;
+    }
+
     /**
      * Checks to see if the knight can either capture or move into a free space
      * @param xInc x advance

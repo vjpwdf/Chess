@@ -55,4 +55,6 @@ public abstract class Piece {
      * @return a list of valid chess moves for this piece
      */
     public abstract List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> opponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove);
+
+    public abstract int getPieceValue();
 }

@@ -279,4 +279,27 @@ public class StateEngine {
         }
         return kingCount != 2;
     }
+
+    public static int getDepthOfState(StateNode stateNode) {
+        StateNode tempNode = stateNode;
+        int depth = 0;
+        while(tempNode.getParent() != null) {
+            tempNode = tempNode.getParent();
+            depth++;
+        }
+        return depth;
+    }
+
+    public static int getHeuristicOfState(StateNode node, boolean whitePlayer) {
+        int hueristic = 0;
+        List<Piece> piecesForPlayer = node.getState().getChessBoard().getPiecesForPlayer(whitePlayer);
+        List<Piece> opponentsPieces = node.getState().getChessBoard().getPiecesForPlayer(!whitePlayer);
+        for (Piece piece : piecesForPlayer) {
+            hueristic -= piece.getPieceValue();
+        }
+        for (Piece piece : opponentsPieces) {
+            hueristic += piece.getPieceValue();
+        }
+        return hueristic;
+    }
 }

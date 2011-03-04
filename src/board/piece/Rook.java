@@ -33,6 +33,11 @@ public class Rook extends Piece{
         return validBishopMoves;
     }
 
+    @Override
+    public int getPieceValue() {
+        return 5;
+    }
+
     /**
      * Iterates in a particular direction and gets all valid moves in that direction including captures and free space movements
      * @param xInc x iterator
