@@ -295,10 +295,10 @@ public class StateEngine {
         List<Piece> piecesForPlayer = node.getState().getChessBoard().getPiecesForPlayer(whitePlayer);
         List<Piece> opponentsPieces = node.getState().getChessBoard().getPiecesForPlayer(!whitePlayer);
         for (Piece piece : piecesForPlayer) {
-            hueristic -= piece.getPieceValue();
+            hueristic += piece.getPieceValue();
         }
         for (Piece piece : opponentsPieces) {
-            hueristic += piece.getPieceValue();
+            hueristic -= piece.getPieceValue();
         }
         return hueristic;
     }
