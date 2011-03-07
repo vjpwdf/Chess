@@ -37,6 +37,10 @@ public class King extends Piece {
         return validKingMoves;
     }
 
+    /**
+     * Gets the value of the piece for heuristics
+     * @return the value of the piece for heuristics
+     */
     @Override
     public int getPieceValue() {
         return 0;

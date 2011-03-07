@@ -9,7 +9,6 @@ import state.StateNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +19,13 @@ import java.util.Random;
  */
 public class MiniMaxStateChooser implements StateChooser {
     private StateNode moveNode;
-    private Random random = new Random();
+
+    /**
+     * Gets the next state based upon your current state
+     * @param state state to get future state from
+     * @param whitePlayer whether the player is white or black
+     * @return the next state based upon your current state
+     */
     @Override
     public State chooseNextStateBasedOnCurrentState(StateNode state, boolean whitePlayer) {
         for (int i = 1; i < 4; i++) {
@@ -34,6 +39,15 @@ public class MiniMaxStateChooser implements StateChooser {
         return moveNode.getState();
     }
 
+    /**
+     * ID-Minimax algorithm that chooses the next state
+     * @param node current node
+     * @param depth current depth of minimax
+     * @param maxDepth the initial depth passed
+     * @param whitePlayer whether to do this for white or black player
+     * @return the heuristic of a terminal state
+     * @throws Exception if can't generate next states
+     */
     public int MiniMax(StateNode node, int depth, int maxDepth, boolean whitePlayer) throws Exception {
         int depthOfState = StateEngine.getDepthOfState(node);
         if(depthOfState < maxDepth && (node.getChildrenStates() == null || node.getChildrenStates().isEmpty())) {
@@ -55,8 +69,7 @@ public class MiniMaxStateChooser implements StateChooser {
         int max;
         if(depthOfState % 2 == 0) {
             max = Integer.MIN_VALUE;
-        }
-        else {
+        } else {
             max = Integer.MAX_VALUE;
         }
         int temp = Integer.MIN_VALUE+1;
@@ -65,10 +78,11 @@ public class MiniMaxStateChooser implements StateChooser {
         for (StateNode child : childrenStates) {
             int miniMaxOfChildNode = MiniMax(child, depth - 1, maxDepth, whitePlayer);
 
-            if(depthOfState % 2 == 0)
+            if(depthOfState % 2 == 0) {
                 max = Math.max(max, miniMaxOfChildNode);
-            else
+            } else {
                 max = Math.min(max, miniMaxOfChildNode);
+            }
 
             if(temp != max && depth == maxDepth) {
                 moveNode = child;
@@ -78,6 +92,14 @@ public class MiniMaxStateChooser implements StateChooser {
         return max;
     }
 
+    /**
+     * Checks to see if the state is checkmate
+     * @param depth depth of minimax
+     * @param node node to check to see if is checkmate
+     * @param depthOfState depth of the state
+     * @param whitePlayer whether the state is for white or blackplayer
+     * @return true if the state is checkmate
+     */
     private boolean isCheckmate(int depth, StateNode node, int depthOfState, boolean whitePlayer) {
         if(depth!=0) {
             return true;

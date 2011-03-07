@@ -40,6 +40,10 @@ public class Pawn extends Piece {
         return allValidPawnMoves;
     }
 
+    /**
+     * Gets the value of the piece for heuristics
+     * @return the value of the piece for heuristics
+     */
     @Override
     public int getPieceValue() {
         return 1;

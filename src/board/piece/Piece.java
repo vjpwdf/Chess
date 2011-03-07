@@ -56,5 +56,9 @@ public abstract class Piece {
      */
     public abstract List<ChessMove> getValidPieceMoves(Piece chessPiece, List<Piece> opponentsChessPieces, ChessBoard chessBoard, ChessMove lastMove);
 
+    /**
+     * Gets the value of the piece for heuristics
+     * @return the value of the piece for heuristics
+     */
     public abstract int getPieceValue();
 }

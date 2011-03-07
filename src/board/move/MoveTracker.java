@@ -1,5 +1,7 @@
 package board.move;
 
+import board.ChessBoard;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,4 +12,5 @@ import java.util.List;
  */
 public class MoveTracker {
     public static List<ChessMove> allMoves = new ArrayList<ChessMove>();
+    public static List<ChessBoard> allChessBoards = new ArrayList<ChessBoard>();
 }

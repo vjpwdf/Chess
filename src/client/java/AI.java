@@ -1,7 +1,9 @@
 package client.java;
 
 import board.move.ChessMove;
+import board.move.ChessMoveBuilder;
 import board.move.MoveTracker;
+import board.piece.PieceMover;
 import com.sun.jna.Pointer;
 import player.Player;
 import state.State;
@@ -84,6 +86,7 @@ public class AI extends BaseAI {
         if (moves.length != 0) {
             int movedPieceFile = moves[0].getToFile();
             int movedPieceRank = moves[0].getToRank();
+            MoveTracker.allMoves.add(ChessMoveBuilder.convertMoveToChessMove(moves[0]));
 
             int indexOfPieceFound = -1;
 
@@ -143,11 +146,13 @@ public class AI extends BaseAI {
 
         if (System.getProperty("manual").equals("false")) {
             stateEngine.setCurrentBoard(board);
+            MoveTracker.allChessBoards.add(stateEngine.getRootState().getState().getChessBoard());
             ChessMove nextMoveToPerform = stateEngine.getNextStateFromStateChooser(stateChooser, isWhitePlayer);
             if (nextMoveToPerform == null) {
-                System.out.println("Checkmate");
+                System.out.println("Checkmate/Stalemate");
                 return true;
             }
+            MoveTracker.allChessBoards.add(PieceMover.generateNewStateWithMove(stateEngine.getRootState().getState().getChessBoard(), nextMoveToPerform).getChessBoard());
             System.out.println("Making move: " + nextMoveToPerform.getFromFile() + (nextMoveToPerform.getFromRank() + 1) + nextMoveToPerform.getToFile() + (nextMoveToPerform.getToRank() + 1) + nextMoveToPerform.getPromotion());
             MoveTracker.allMoves.add(nextMoveToPerform);
             if (nextMoveToPerform.isCasteling()) {

@@ -5,10 +5,7 @@ import board.ChessBoard;
 import board.move.ChessMove;
 import board.move.ChessMoveBuilder;
 import board.move.MoveTracker;
-import board.piece.Piece;
-import board.piece.PieceEnumeration;
-import board.piece.PieceMover;
-import board.piece.PiecePosition;
+import board.piece.*;
 import client.java.AI;
 import state.chooser.StateChooser;
 
@@ -30,6 +27,15 @@ public class StateEngine {
      */
     public void setRootState(StateNode rootState) {
         this.rootState = rootState;
+    }
+
+    /**
+     * Gets the root state of the state engine
+     *
+     * @return the root state of the state engine
+     */
+    public StateNode getRootState() {
+        return rootState;
     }
 
     /**
@@ -142,7 +148,7 @@ public class StateEngine {
         List<ChessMove> chessMoveList = new ArrayList<ChessMove>(MoveTracker.allMoves);
         StateNode iterator = state;
         while (iterator.getParent() != null) {
-            chessMoveList.add(state.getState().getMove());
+            chessMoveList.add(iterator.getState().getMove());
             iterator = iterator.getParent();
         }
         for (ChessMove move : chessMoveList) {
@@ -162,9 +168,6 @@ public class StateEngine {
     private static ChessMove convertLastMoveFromServer(ChessMove lastMove) {
         if (AI.moves != null && AI.moves.length > 0) {
             lastMove = ChessMoveBuilder.convertMoveToChessMove(AI.moves[0]);
-        }
-        if (lastMove != null) {
-            MoveTracker.allMoves.add(lastMove);
         }
         return lastMove;
     }
@@ -217,7 +220,7 @@ public class StateEngine {
         for (Piece opponentsPiece : opponentsPieces) {
             List<ChessMove> opponentsMoves = opponentsPiece.getValidPieceMoves(opponentsPiece, null, futureState.getChessBoard(), futureState.getMove());
             for (ChessMove opponentsMove : opponentsMoves) {
-                if(kingPosition.getX() == opponentsMove.getToFileByte() && kingPosition.getY() == opponentsMove.getToRank()) {
+                if (kingPosition.getX() == opponentsMove.getToFileByte() && kingPosition.getY() == opponentsMove.getToRank()) {
                     return true;
                 }
             }
@@ -227,15 +230,15 @@ public class StateEngine {
 
     private static PiecePosition getKingPositionForPlayer(boolean whitePlayer, byte[][] board) {
         PiecePosition kingPosition = new PiecePosition();
-        for(int x = 0; x < 8; x++) {
-            for(int y = 0; y < 8; y++) {
-                if(whitePlayer) {
-                    if(PieceEnumeration.isWhiteKing(board[x][y])) {
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                if (whitePlayer) {
+                    if (PieceEnumeration.isWhiteKing(board[x][y])) {
                         kingPosition.setX(x);
                         kingPosition.setY(y);
                     }
                 } else {
-                    if(PieceEnumeration.isBlackKing(board[x][y])) {
+                    if (PieceEnumeration.isBlackKing(board[x][y])) {
                         kingPosition.setX(x);
                         kingPosition.setY(y);
                     }
@@ -280,18 +283,34 @@ public class StateEngine {
         return kingCount != 2;
     }
 
+    /**
+     * Gets the depth of the state node
+     *
+     * @param stateNode state node to get the depth of
+     * @return the depth of the state node
+     */
     public static int getDepthOfState(StateNode stateNode) {
         StateNode tempNode = stateNode;
         int depth = 0;
-        while(tempNode.getParent() != null) {
+        while (tempNode.getParent() != null) {
             tempNode = tempNode.getParent();
             depth++;
         }
         return depth;
     }
 
+    /**
+     * Gets the heuristic of the state node being evaluated
+     *
+     * @param node        state node being evaluated
+     * @param whitePlayer whether to evaluate as white or black player
+     * @return the heuristic of the state node being evaluated
+     */
     public static int getHeuristicOfState(StateNode node, boolean whitePlayer) {
         int hueristic = 0;
+        if (isDraw(node)) {
+            return 0;
+        }
         List<Piece> piecesForPlayer = node.getState().getChessBoard().getPiecesForPlayer(whitePlayer);
         List<Piece> opponentsPieces = node.getState().getChessBoard().getPiecesForPlayer(!whitePlayer);
         for (Piece piece : piecesForPlayer) {
@@ -301,5 +320,178 @@ public class StateEngine {
             hueristic -= piece.getPieceValue();
         }
         return hueristic;
+    }
+
+    /**
+     * Checks to see if the node passed is a draw state
+     *
+     * @param node node to see if the node passed is a draw state
+     * @return true if the node passed is a draw state otherwise false
+     */
+    private static boolean isDraw(StateNode node) {
+        if (noCapturesInLast50Moves(node) || noPawnMovedInLast50Moves(node) || isKingVsKing(node) || isKingVsKingAnd(node, Bishop.class) || isKingVsKingAnd(node, Knight.class) || isKingAndBishopVsKingAndBishop(node)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if the state is king and bishop vs king and bishop
+     * @param node to see if the state is king and bishop vs king and bishop
+     * @return true if the state is king and bishop vs king and bishop
+     */
+    private static boolean isKingAndBishopVsKingAndBishop(StateNode node) {
+        if (node.getState().getChessBoard().getPieceCount() != 4) {
+            return false;
+        }
+        List<Piece> whitePieces = node.getState().getChessBoard().getPiecesForPlayer(true);
+        List<Piece> blackPieces = node.getState().getChessBoard().getPiecesForPlayer(true);
+        if(whitePieces.size() != 2 || blackPieces.size() != 2) {
+            return false;
+        }
+        int bishopCounter = 0;
+        for (Piece blackPiece : blackPieces) {
+            if (blackPiece instanceof Bishop) {
+                bishopCounter++;
+            }
+        }
+        for (Piece whitePiece : whitePieces) {
+            if (whitePiece instanceof Bishop) {
+                bishopCounter++;
+            }
+        }
+        return bishopCounter==2;
+    }
+
+    /**
+     * Checks to see if the state is King vs a specific class (such as knight or bishop)
+     * @param node  to see if the state is King vs a specific class (such as knight or bishop)
+     * @param clazz a specific class (such as knight or bishop)
+     * @return true if the situation is king vs king and another piece
+     */
+    private static boolean isKingVsKingAnd(StateNode node, Class clazz) {
+        if (node.getState().getChessBoard().getPieceCount() != 3) {
+            return false;
+        }
+        List<Piece> whitePieces = node.getState().getChessBoard().getPiecesForPlayer(true);
+        List<Piece> blackPieces = node.getState().getChessBoard().getPiecesForPlayer(true);
+        if (whitePieces.size() == 1) {
+            for (Piece blackPiece : blackPieces) {
+                if (clazz.isInstance(blackPiece)) {
+                    return true;
+                }
+            }
+        } else {
+            for (Piece whitePiece : whitePieces) {
+                if (clazz.isInstance(whitePiece)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if the node is King vs King
+     * @param node node to check to see if is king vs king
+     * @return true if node is king vs king
+     */
+    private static boolean isKingVsKing(StateNode node) {
+        return node.getState().getChessBoard().getPieceCount() == 2;
+    }
+
+    /**
+     * Checks to see if there has been any pawn moves in the last 50 moves
+     *
+     * @param node to see if there has been any pawn moves in the last 50 moves
+     * @return if there has been any pawn moves in the last 50 moves
+     */
+    private static boolean noPawnMovedInLast50Moves(StateNode node) {
+        List<Piece> whitePieces = node.getState().getChessBoard().getPiecesForPlayer(true);
+        List<Piece> blackPieces = node.getState().getChessBoard().getPiecesForPlayer(false);
+        for (Piece piece : whitePieces) {
+            if (piece instanceof Pawn) {
+                if (pawnMovedInLast50Moves(piece, node, true)) {
+                    return false;
+                }
+            }
+        }
+        for (Piece piece : blackPieces) {
+            if (piece instanceof Pawn) {
+                if (pawnMovedInLast50Moves(piece, node, false)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks to see if a pawn has moved in the last 50 moves
+     *
+     * @param pawn        the pawn
+     * @param node        to see if a pawn has moved in the last 50 moves
+     * @param whitePlayer for black or white
+     * @return if a pawn has moved in the last 50 moves
+     */
+    private static boolean pawnMovedInLast50Moves(Piece pawn, StateNode node, boolean whitePlayer) {
+        List<ChessBoard> allChessBoardsForNode = new ArrayList<ChessBoard>(MoveTracker.allChessBoards);
+        StateNode iterator = node;
+        while (iterator.getParent() != null) {
+            allChessBoardsForNode.add(iterator.getState().getChessBoard());
+            iterator = iterator.getParent();
+            if (allChessBoardsForNode.size() == 50) {
+                break;
+            }
+        }
+        if (allChessBoardsForNode.size() < 50) {
+            return false;
+        }
+        for (int i = 0; i < 50; i++) {
+            ChessBoard chessBoard = allChessBoardsForNode.get(allChessBoardsForNode.size() - (i + 1));
+            byte[][] board = chessBoard.getBoard();
+            if (whitePlayer) {
+                if (board[pawn.getPosition().getX()][pawn.getPosition().getY()] != PieceEnumeration.P1_PAWN) {
+                    return true;
+                }
+            }
+            if (!whitePlayer) {
+                if (board[pawn.getPosition().getX()][pawn.getPosition().getY()] != PieceEnumeration.P2_PAWN) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if there has been any captures in the last 50 moves
+     *
+     * @param node to see if there has been any captures in the last 50 moves
+     * @return if there has been any captures in the last 50 moves
+     */
+    private static boolean noCapturesInLast50Moves(StateNode node) {
+        List<ChessBoard> allChessBoardsForNode = new ArrayList<ChessBoard>(MoveTracker.allChessBoards);
+        StateNode iterator = node;
+        while (iterator.getParent() != null) {
+            allChessBoardsForNode.add(iterator.getState().getChessBoard());
+            iterator = iterator.getParent();
+            if (allChessBoardsForNode.size() == 50) {
+                break;
+            }
+        }
+        if (allChessBoardsForNode.size() < 50) {
+            return false;
+        }
+        int chessBoardPieces = allChessBoardsForNode.get(0).getPieceCount();
+        for (int i = 0; i < 50; i++) {
+            ChessBoard chessBoard = allChessBoardsForNode.get(allChessBoardsForNode.size() - (i + 1));
+            int temp = chessBoard.getPieceCount();
+            if (chessBoardPieces != temp) {
+                return false;
+            }
+            chessBoardPieces = temp;
+        }
+        return true;
     }
 }

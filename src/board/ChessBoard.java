@@ -65,4 +65,16 @@ public class ChessBoard {
         chessBoard.setBoard(copiedBoard);
         return chessBoard;
     }
+
+    public int getPieceCount() {
+        int pieceCount = 0;
+        for(int x = 0; x < 8; x++) {
+            for(int y = 0; y < 8; y++) {
+                if(board[x][y] != PieceEnumeration.FREE_SPACE) {
+                    pieceCount++;
+                }
+            }
+        }
+        return pieceCount;
+    }
 }
