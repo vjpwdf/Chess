@@ -308,9 +308,9 @@ public class StateEngine {
      */
     public static int getHeuristicOfState(StateNode node, boolean whitePlayer) {
         int hueristic = 0;
-        if (isDraw(node)) {
-            return 0;
-        }
+//        if (isDraw(node)) {
+//            return 0;
+//        }
         List<Piece> piecesForPlayer = node.getState().getChessBoard().getPiecesForPlayer(whitePlayer);
         List<Piece> opponentsPieces = node.getState().getChessBoard().getPiecesForPlayer(!whitePlayer);
         for (Piece piece : piecesForPlayer) {
@@ -329,7 +329,7 @@ public class StateEngine {
      * @return true if the node passed is a draw state otherwise false
      */
     private static boolean isDraw(StateNode node) {
-        if (noCapturesInLast50Moves(node) || noPawnMovedInLast50Moves(node) || isKingVsKing(node) || isKingVsKingAnd(node, Bishop.class) || isKingVsKingAnd(node, Knight.class) || isKingAndBishopVsKingAndBishop(node)) {
+        if (noCapturesInLast50Moves(node) || !noPawnMovedInLast50Moves(node) || isKingVsKing(node) || isKingVsKingAnd(node, Bishop.class) || isKingVsKingAnd(node, Knight.class) || isKingAndBishopVsKingAndBishop(node)) {
             return true;
         }
         return false;
@@ -346,6 +346,8 @@ public class StateEngine {
         }
         List<Piece> whitePieces = node.getState().getChessBoard().getPiecesForPlayer(true);
         List<Piece> blackPieces = node.getState().getChessBoard().getPiecesForPlayer(true);
+        boolean whiteBishopOnBlackSquare = false;
+        boolean blackBishopOnBlackSquare = false;
         if(whitePieces.size() != 2 || blackPieces.size() != 2) {
             return false;
         }
@@ -353,14 +355,16 @@ public class StateEngine {
         for (Piece blackPiece : blackPieces) {
             if (blackPiece instanceof Bishop) {
                 bishopCounter++;
+                blackBishopOnBlackSquare = blackPiece.getPosition().getX()%2==blackPiece.getPosition().getY()%2;
             }
         }
         for (Piece whitePiece : whitePieces) {
             if (whitePiece instanceof Bishop) {
                 bishopCounter++;
+                whiteBishopOnBlackSquare = whitePiece.getPosition().getX()%2 == whitePiece.getPosition().getY()%2;
             }
         }
-        return bishopCounter==2;
+        return bishopCounter==2 && whiteBishopOnBlackSquare == blackBishopOnBlackSquare;
     }
 
     /**

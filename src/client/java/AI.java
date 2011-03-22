@@ -9,8 +9,8 @@ import player.Player;
 import state.State;
 import state.StateEngine;
 import state.StateNode;
-import state.chooser.MiniMaxStateChooser;
 import state.chooser.StateChooser;
+import state.chooser.TLIDABDLMM;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,8 +18,9 @@ import java.io.InputStreamReader;
 
 public class AI extends BaseAI {
     public static StateEngine stateEngine = new StateEngine();
-    private StateChooser stateChooser = new MiniMaxStateChooser();
+    private StateChooser stateChooser = new TLIDABDLMM();
     private static Boolean isWhitePlayer = null;
+    public static int playerTimeRemaining;
 
     /**
      * Constructor for the AI main runner
@@ -229,9 +230,11 @@ public class AI extends BaseAI {
      */
     private void displayTimeRemaining() {
         if (isWhitePlayer) {
-            System.out.println("Playing white : Time remaining : " + getPlayer0Time());
+            playerTimeRemaining = getPlayer0Time();
+            System.out.println("Playing white : Time remaining : " + playerTimeRemaining);
         } else {
-            System.out.println("Playing black : Time remaining : " + getPlayer1Time());
+            playerTimeRemaining = getPlayer1Time();
+            System.out.println("Playing black : Time remaining : " + playerTimeRemaining);
         }
     }
 
