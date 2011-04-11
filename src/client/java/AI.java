@@ -10,7 +10,7 @@ import state.State;
 import state.StateEngine;
 import state.StateNode;
 import state.chooser.StateChooser;
-import state.chooser.TLIDABDLMM;
+import state.chooser.TLHTQSIDABDLMM;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 
 public class AI extends BaseAI {
     public static StateEngine stateEngine = new StateEngine();
-    private StateChooser stateChooser = new TLIDABDLMM();
+    private StateChooser stateChooser = new TLHTQSIDABDLMM();
     private static Boolean isWhitePlayer = null;
     public static int playerTimeRemaining;
 

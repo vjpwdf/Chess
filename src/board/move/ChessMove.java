@@ -150,4 +150,34 @@ public class ChessMove {
     public String toString() {
         return "" + fromFile + (int)fromRank + toFile + (int)toRank + (promotion=='\0'?"":promotion);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChessMove chessMove = (ChessMove) o;
+
+        if (capturedViaEnPassant != chessMove.capturedViaEnPassant) return false;
+        if (casteling != chessMove.casteling) return false;
+        if (fromFile != chessMove.fromFile) return false;
+        if (fromRank != chessMove.fromRank) return false;
+        if (promotion != chessMove.promotion) return false;
+        if (toFile != chessMove.toFile) return false;
+        if (toRank != chessMove.toRank) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) fromFile;
+        result = 31 * result + (int) toFile;
+        result = 31 * result + (int) fromRank;
+        result = 31 * result + (int) toRank;
+        result = 31 * result + (int) promotion;
+        result = 31 * result + (capturedViaEnPassant ? 1 : 0);
+        result = 31 * result + (casteling ? 1 : 0);
+        return result;
+    }
 }

@@ -59,4 +59,21 @@ public class StateNode {
     public void setChildrenStates(List<StateNode> childrenStates) {
         this.childrenStates = childrenStates;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StateNode stateNode = (StateNode) o;
+
+        if (state != null ? !state.equals(stateNode.state) : stateNode.state != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return state != null ? state.hashCode() : 0;
+    }
 }

@@ -8,22 +8,21 @@ import state.State;
 import state.StateEngine;
 import state.StateNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
  * User: vincent
- * Date: 22/03/11
- * Time: 11:41 AM
+ * Date: 11/04/11
+ * Time: 3:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TLIDABDLMM implements StateChooser {
+public class TLHTQSIDABDLMM implements StateChooser {
     private StateNode moveNode;
     private StateNode bestMoveNodeFromPreviousIteration;
     private long startTime = 0;
     private long endTime = 0;
+    private Map<State, Integer> historyTable = new HashMap<State, Integer>();
 
     /**
      * Gets the next state based upon your current state
@@ -36,7 +35,9 @@ public class TLIDABDLMM implements StateChooser {
     public State chooseNextStateBasedOnCurrentState(StateNode state, boolean whitePlayer) {
         startTime = System.currentTimeMillis();
         endTime = startTime + getTimeByHeuristic();
+        historyTable.clear();
         for (int i = 1; i < 20; i++) {
+            System.out.println("Made it to depth " + i);
             state.setChildrenStates(new ArrayList<StateNode>());
             try {
                 int alpha = Integer.MIN_VALUE;
@@ -86,6 +87,9 @@ public class TLIDABDLMM implements StateChooser {
                     return Integer.MAX_VALUE;
                 }
             }
+            if(!isQuiescent(node, depth, whitePlayer)) {
+                return quiescentSearch(node, 2, alpha, beta, maxDepth, whitePlayer, depth);
+            }
             return StateEngine.getHeuristicOfState(node, whitePlayer);
         }
         int max;
@@ -96,7 +100,8 @@ public class TLIDABDLMM implements StateChooser {
         }
         int temp = Integer.MIN_VALUE + 1;
         Collections.shuffle(node.getChildrenStates());
-        List<StateNode> childrenStates = new ArrayList<StateNode>(node.getChildrenStates());
+        List<StateNode> childrenStateList = new ArrayList<StateNode>(node.getChildrenStates());
+        Queue<StateNode> childrenStates = buildPriorityQueue(childrenStateList);
         for (StateNode child : childrenStates) {
             int miniMaxOfChildNode = ABMiniMax(child, depth - 1, maxDepth, whitePlayer, alpha, beta);
 
@@ -105,8 +110,11 @@ public class TLIDABDLMM implements StateChooser {
                 alpha = Math.max(alpha, miniMaxOfChildNode);
                 if (beta <= alpha) {
                     prune(child);
-                    if (temp != max && depth == maxDepth) {
-                        moveNode = child;
+                    if (temp != max) {
+                        if (depth == maxDepth) {
+                            moveNode = child;
+                        }
+                        updateHistoryTable(child.getState());
                     }
                     break;
                 }
@@ -115,23 +123,125 @@ public class TLIDABDLMM implements StateChooser {
                 beta = Math.min(beta, miniMaxOfChildNode);
                 if (beta <= alpha) {
                     prune(child);
-                    if (temp != max && depth == maxDepth) {
-                        moveNode = child;
+                    if (temp != max) {
+                        if (depth == maxDepth) {
+                            moveNode = child;
+                        }
+                        updateHistoryTable(child.getState());
                     }
                     break;
                 }
             }
 
-            if (temp != max && depth == maxDepth) {
-                moveNode = child;
+            if (temp != max) {
+                if (depth == maxDepth) {
+                    moveNode = child;
+                }
+                updateHistoryTable(child.getState());
             }
             temp = max;
         }
         return max;
     }
 
+    private int quiescentSearch(StateNode node, int quiescentDepth, int alpha, int beta, int maxDepth, boolean whitePlayer, int depth) throws OutOfTimeException, CheckmateException {
+        if (System.currentTimeMillis() > endTime) {
+            throw new OutOfTimeException();
+        }
+        int depthOfState = StateEngine.getDepthOfState(node);
+        if (depthOfState < maxDepth+quiescentDepth && (node.getChildrenStates() == null || node.getChildrenStates().isEmpty())) {
+            StateEngine.generateFutureStates(node, depthOfState % 2 == 0 ? whitePlayer : !whitePlayer, node.getParent() == null ? null : node.getParent().getState().getMove());
+        }
+        if (node.getChildrenStates() == null || node.getChildrenStates().isEmpty() || quiescentDepth <= 0 || isQuiescent(node, depthOfState, whitePlayer)) {
+            if (isCheckmate(depth, node, depthOfState, whitePlayer)) {
+                if (depth == maxDepth) {
+                    throw new CheckmateException("Checkmate");
+                }
+                if (depthOfState % 2 == 0) {
+                    return Integer.MIN_VALUE;
+                } else {
+                    return Integer.MAX_VALUE;
+                }
+            }
+            return StateEngine.getHeuristicOfState(node, whitePlayer);
+        }
+        int max;
+        if (depthOfState % 2 == 0) {
+            max = Integer.MIN_VALUE;
+        } else {
+            max = Integer.MAX_VALUE;
+        }
+        int temp = Integer.MIN_VALUE + 1;
+        Collections.shuffle(node.getChildrenStates());
+        List<StateNode> childrenStateList = new ArrayList<StateNode>(node.getChildrenStates());
+        Queue<StateNode> childrenStates = buildPriorityQueue(childrenStateList);
+        for (StateNode child : childrenStates) {
+            int miniMaxOfChildNode = quiescentSearch(child, quiescentDepth - 1, alpha, beta, maxDepth, whitePlayer, depth);
+
+            if (depthOfState % 2 == 0) {
+                max = Math.max(max, miniMaxOfChildNode);
+                alpha = Math.max(alpha, miniMaxOfChildNode);
+                if (beta <= alpha) {
+                    prune(child);
+                    if (temp != max) {
+                        updateHistoryTable(child.getState());
+                    }
+                    break;
+                }
+            } else {
+                max = Math.min(max, miniMaxOfChildNode);
+                beta = Math.min(beta, miniMaxOfChildNode);
+                if (beta <= alpha) {
+                    prune(child);
+                    if (temp != max) {
+                        updateHistoryTable(child.getState());
+                    }
+                    break;
+                }
+            }
+
+            if (temp != max) {
+                updateHistoryTable(child.getState());
+            }
+            temp = max;
+        }
+        return max;
+    }
+
+    private boolean isQuiescent(StateNode state, int depth, boolean whitePlayer) {
+        int initialPieceCount = state.getState().getChessBoard().getPieceCount();
+        StateEngine.generateFutureStates(state, depth % 2 == 0 ? whitePlayer : !whitePlayer, state.getParent().getState().getMove());
+        for (StateNode stateNode : state.getChildrenStates()) {
+            if(stateNode.getState().getChessBoard().getPieceCount() != initialPieceCount) {
+                return false;
+            }
+        }
+        state.getChildrenStates().clear();
+        return true;
+    }
+
+    private void updateHistoryTable(State state) {
+        Integer count = historyTable.get(state);
+        if (count == null) {
+            historyTable.put(state, 1);
+        } else {
+            historyTable.remove(state);
+            historyTable.put(state, count + 1);
+        }
+    }
+
+    private PriorityQueue<StateNode> buildPriorityQueue(List<StateNode> childrenStateList) {
+        Comparator<StateNode> stateComparator = new StateComparator(historyTable);
+        PriorityQueue<StateNode> stateNodes = new PriorityQueue<StateNode>(childrenStateList.size(), stateComparator);
+        for (StateNode stateNode : childrenStateList) {
+            stateNodes.add(stateNode);
+        }
+        return stateNodes;
+    }
+
     /**
      * Prunes the passed in node
+     *
      * @param child child node to prune
      */
     private void prune(StateNode child) {
@@ -169,20 +279,21 @@ public class TLIDABDLMM implements StateChooser {
 
     /**
      * Get time heuristic
+     *
      * @return new time range to set
      */
     public long getTimeByHeuristic() {
         int numberOfMovesPlayed = MoveTracker.allMoves.size();
-        if(numberOfMovesPlayed < 10) {
+        if (numberOfMovesPlayed < 10) {
             return (long) (2000);
-        } else if(numberOfMovesPlayed < 20) {
-            return (long) (AI.playerTimeRemaining/100 * 0.03)*1000;
-        } else if(numberOfMovesPlayed < 30) {
-            return (long) (AI.playerTimeRemaining/100 * 0.1)*1000;
-        } else if(numberOfMovesPlayed < 40) {
-            return (long) (AI.playerTimeRemaining/100 * 0.07)*1000;
+        } else if (numberOfMovesPlayed < 20) {
+            return (long) (AI.playerTimeRemaining / 100 * 0.03) * 1000;
+        } else if (numberOfMovesPlayed < 30) {
+            return (long) (AI.playerTimeRemaining / 100 * 0.1) * 1000;
+        } else if (numberOfMovesPlayed < 40) {
+            return (long) (AI.playerTimeRemaining / 100 * 0.07) * 1000;
         } else {
-            return (long) (AI.playerTimeRemaining/100 * 0.01)*1000;
+            return (long) (AI.playerTimeRemaining / 100 * 0.01) * 1000;
         }
     }
 }

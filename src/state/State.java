@@ -43,4 +43,24 @@ public class State {
     public void setChessBoard(ChessBoard chessBoard) {
         this.chessBoard = chessBoard;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        State state = (State) o;
+
+        if (chessBoard != null ? !chessBoard.equals(state.getChessBoard()) : state.chessBoard != null) return false;
+        if (move != null ? !move.equals(state.move) : state.move != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = move != null ? move.hashCode() : 0;
+        result = 31 * result + (chessBoard != null ? chessBoard.hashCode() : 0);
+        return result;
+    }
 }

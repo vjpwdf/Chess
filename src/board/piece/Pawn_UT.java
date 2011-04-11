@@ -3,10 +3,13 @@ package board.piece;
 import board.BoardConverter;
 import board.ChessBoard;
 import board.move.ChessMove;
-import client.java.AI;
 import org.junit.Test;
+import state.State;
 import state.StateEngine;
 import state.StateNode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -215,5 +218,134 @@ public class Pawn_UT {
         StateNode state = StateEngine.convertBoardToState(board, null);
         StateEngine.generateFutureStates(state, false, chessMove);
         assertEquals(2, state.getChildrenStates().size());
+    }
+
+    @Test
+    public void testTwoStateHashCodes() {
+        char charBoard[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', 'p', 'R', 'p', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        StateNode state = StateEngine.convertBoardToState(board, null);
+
+        char charBoard2[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', 'p', 'R', 'p', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board2 = BoardConverter.convertCharBoardToByteBoard(charBoard2);
+        StateNode state2 = StateEngine.convertBoardToState(board2, null);
+
+        assertEquals(state.hashCode(), state2.hashCode());
+        assertEquals(board.hashCode(), board2.hashCode());
+    }
+
+    @Test
+    public void testTwoStateHashCodes_WithMoves() {
+        char charBoard[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', 'p', 'R', 'p', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        ChessMove move = new ChessMove();
+        move.setFromFile('a');
+        move.setToFile('b');
+        move.setFromRank((byte)0);
+        move.setToRank((byte)1);
+        StateNode state = StateEngine.convertBoardToState(board, move);
+
+        char charBoard2[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', 'p', 'R', 'p', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board2 = BoardConverter.convertCharBoardToByteBoard(charBoard2);
+        ChessMove move2 = new ChessMove();
+        move2.setFromFile('a');
+        move2.setToFile('b');
+        move2.setFromRank((byte)0);
+        move2.setToRank((byte)1);
+        StateNode state2 = StateEngine.convertBoardToState(board2, move2);
+
+        assertEquals(state.hashCode(), state2.hashCode());
+        assertEquals(board.hashCode(), board2.hashCode());
+        assertEquals(move.hashCode(), move2.hashCode());
+    }
+    @Test
+    public void testTwoStateHashCodes_WithMoves_HTTest() {
+        char charBoard[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', 'p', 'R', 'p', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board = BoardConverter.convertCharBoardToByteBoard(charBoard);
+        ChessMove move = new ChessMove();
+        move.setFromFile('a');
+        move.setToFile('b');
+        move.setFromRank((byte) 0);
+        move.setToRank((byte) 1);
+        StateNode state = StateEngine.convertBoardToState(board, move);
+
+        char charBoard2[][] = new char[][] {
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', 'p', 'R', 'p', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'},
+                {'.', '.', '.', '.', '.', '.', '.', '.'}
+        };
+        ChessBoard board2 = BoardConverter.convertCharBoardToByteBoard(charBoard2);
+        ChessMove move2 = new ChessMove();
+        move2.setFromFile('a');
+        move2.setToFile('b');
+        move2.setFromRank((byte)0);
+        move2.setToRank((byte)1);
+        StateNode state2 = StateEngine.convertBoardToState(board2, move2);
+
+        assertEquals(state.hashCode(), state2.hashCode());
+        assertEquals(state.getState().hashCode(), state2.getState().hashCode());
+        assertEquals(board.hashCode(), board2.hashCode());
+        assertEquals(move.hashCode(), move2.hashCode());
+
+
+
+
+        Map<State, Integer> historyTable = new HashMap<State, Integer>();
+        historyTable.put(state.getState(), 1);
+//        historyTable.remove(state2);
+//        Integer integer = historyTable.get(state2);
+        historyTable.put(state2.getState(), 2);
+
+        System.out.println();
     }
 }
